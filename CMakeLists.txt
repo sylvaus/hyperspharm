@@ -16,3 +16,15 @@ add_library(libfft SHARED src/fft.cpp)
 
 add_executable(main src/main.cpp)
 target_link_libraries(main libfft)
+
+if (tests)
+  enable_testing()
+  find_package(GTest REQUIRED)
+  find_package(Threads REQUIRED)
+  include_directories(${GTEST_INCLUDE_DIRS})
+  
+  file(GLOB TESTS_SRC ${PROJECT_SOURCE_DIR}/tests/*.cpp)
+  add_executable(tests ${TESTS_SRC})
+  target_link_libraries(tests libfft ${GTEST_BOTH_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
+  add_test(AllTestsInFoo tests)
+endif()
