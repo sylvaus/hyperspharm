@@ -9,9 +9,10 @@
 #pragma once
 
 #include <complex>
-#include <stdio.h>
+#include <iostream>
 
 bool is_power_of_two(uint32_t value);
 void separate (std::complex<double>* array, uint32_t size);
-bool fft2 (std::complex<double>* array, uint32_t size);
-void unsafe_fft2 (std::complex<double>* array, uint32_t size);
+bool fft (std::complex<double>* array, uint32_t size);
+bool ifft (std::complex<double>* array, uint32_t size);
+void unsafe_fft (std::complex<double>* array, uint32_t size);
