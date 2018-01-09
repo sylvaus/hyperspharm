@@ -8,11 +8,16 @@
 
 #pragma once
 
-#include <complex>
 #include <iostream>
+#include "types.h"
+
+namespace hyperspharm
+{
 
 bool is_power_of_two(uint32_t value);
-void separate (std::complex<double>* array, uint32_t size);
-bool fft (std::complex<double>* array, uint32_t size);
-bool ifft (std::complex<double>* array, uint32_t size);
-void unsafe_fft (std::complex<double>* array, uint32_t size);
+void separate (complex_t* array, uint32_t size);
+bool fft (complex_t* array, uint32_t size);
+bool ifft (complex_t* array, uint32_t size);
+void unsafe_fft (complex_t* array, uint32_t size);
+
+}

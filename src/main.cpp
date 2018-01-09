@@ -22,7 +22,7 @@ void test () {
         X[i] = x[i];        // copy into X[] for FFT work & result
     }
     // compute fft for this data
-    fft(X,nSamples);
+    hyperspharm::fft(X,nSamples);
     
     /*printf("  n\tx[]\tX[]\tf\n");       // header line
     // loop to print values

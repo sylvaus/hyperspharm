@@ -1,10 +1,10 @@
 
 #include "fft.h"
 #include "gtest/gtest.h"
-namespace 
+namespace hyperspharm
 {
   
-bool are_complex_equal(const std::complex<double> left, const std::complex<double> right)
+bool are_complex_equal(const std::complex<double>& left, const std::complex<double>& right)
 {
   static const double threshold = 0.0001;
   return ((fabs(left.real()- right.real()) < threshold) && (fabs(left.imag()- right.imag()) < threshold));
