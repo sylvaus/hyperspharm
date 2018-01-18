@@ -36,10 +36,13 @@ void test () {
 
 int main() 
 {
-    const long cycle = 1000;
+    //const long cycle = 1000;
     auto start = std::chrono::high_resolution_clock::now();
-    for (long index = 0; index < cycle; index++)
-        test ();
+    /*for (long index = 0; index < cycle; index++)
+        test ();*/
+    auto results = hyperspharm::PrimeFactors::compute(45457);
+    for (auto value : results)
+      std::cout << value << std::endl;
     auto finish = std::chrono::high_resolution_clock::now();
     std::chrono::duration<hyperspharm::real_t> elapsed = finish - start;
     std::cout << "Code ran for " << elapsed.count() << "ms\n";

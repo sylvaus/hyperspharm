@@ -13,9 +13,10 @@ endif()
 include_directories(include)
 
 add_library(libfft SHARED src/fft.cpp)
+add_library(libutils SHARED src/utils.cpp)
 
 add_executable(main src/main.cpp)
-target_link_libraries(main libfft)
+target_link_libraries(main libfft libutils)
 
 if (tests)
   enable_testing()
