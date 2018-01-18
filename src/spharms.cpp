@@ -6,3 +6,13 @@
  *
  * Spherical Harmonics Helpers
  */
+
+#include "spharms.h"
+
+namespace hyperspharm
+{
+  
+  
+  
+  
+}

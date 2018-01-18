@@ -11,7 +11,7 @@
 namespace hyperspharm
 {
 
-bool is_power_of_two(uint32_t value)
+bool is_power_of_two(natural_t value)
 {
   while (((value % 2) == 0) && value > 1) 
   {
@@ -26,15 +26,15 @@ bool is_power_of_two(uint32_t value)
 * @param array array of complex number to be separated
 * @param size size of the array
 */
-void separate(std::complex< double >* array, uint32_t size)
+void separate(complex_t* array, natural_t size)
 {
-  const uint32_t half_size = size / 2;
+  const natural_t half_size = size / 2;
   complex_t* temp_array = new complex_t[half_size];  // get temp heap storage
-  for(uint32_t index=0; index < half_size; index++)    // copy all odd elements to heap storage
+  for(natural_t index=0; index < half_size; index++)    // copy all odd elements to heap storage
     temp_array[index] = array[index * 2 + 1];
-  for(uint32_t index=0; index < half_size; index++)    // copy all even elements to lower-half of a[]
+  for(natural_t index=0; index < half_size; index++)    // copy all even elements to lower-half of a[]
     array[index] = array[index*2];
-  for(uint32_t index=0; index < half_size; index++)    // copy all odd (from heap) to upper-half of a[]
+  for(natural_t index=0; index < half_size; index++)    // copy all odd (from heap) to upper-half of a[]
     array[index+size/2] = temp_array[index];
   delete[] temp_array;                 // delete heap storage
 }
@@ -48,7 +48,7 @@ void separate(std::complex< double >* array, uint32_t size)
 * @param size size of the array
 * @return bool returns true if size is a power of two.
 */
-bool fft (complex_t array[], uint32_t size)
+bool fft (complex_t array[], natural_t size)
 {
   if (is_power_of_two(size))
   {
@@ -71,23 +71,23 @@ bool fft (complex_t array[], uint32_t size)
 * @param size size of the array
 * @return bool returns true if size is a power of two.
 */
-bool ifft (complex_t array[], uint32_t size)
+bool ifft (complex_t array[], natural_t size)
 {
   if (is_power_of_two(size))
   {
     // Using the formula inverse F({X_n}) = F({X_{N-n}})/n;
     complex_t temp;
     // X_n = X_{N-n}
-    for (uint32_t index = 1; index < (size/2); index++)
+    for (natural_t index = 1; index < (size/2); index++)
     {
       temp = array[index];
       array[index] = array[size - index];
       array[size - index] = temp;
     }
     unsafe_fft(array, size);
-    for (uint32_t index = 0; index < size; index++)
+    for (natural_t index = 0; index < size; index++)
     {
-      array[index] = array[index] / static_cast<double>(size);
+      array[index] = array[index] / static_cast<real_t>(size);
     }
     return true;
   }
@@ -111,7 +111,7 @@ bool ifft (complex_t array[], uint32_t size)
 * @param array array of complex number to be separated
 * @param size size of the array
 */
-void unsafe_fft (complex_t array[], uint32_t size) 
+void unsafe_fft (complex_t array[], natural_t size) 
 {
   if(size < 2) 
   {
@@ -120,12 +120,12 @@ void unsafe_fft (complex_t array[], uint32_t size)
   } 
   else 
   {
-    const uint32_t half_size = size / 2;
+    const natural_t half_size = size / 2;
     separate(array, size);      // all evens to lower half, all odds to upper half
     unsafe_fft(array, half_size);   // recurse even items
     unsafe_fft(array + half_size, half_size);   // recurse odd  items
     // combine results of two half recursions
-    for(uint32_t index = 0; index < half_size; index++) 
+    for(natural_t index = 0; index < half_size; index++) 
     {
        complex_t e = array[index    ];                              // even
        complex_t o = array[index + half_size];                      // odd

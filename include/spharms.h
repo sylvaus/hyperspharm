@@ -25,36 +25,49 @@ namespace hyperspharm
 class SphericalSurface
 {
 public:
-  const uint32_t N;
-  const uint32_t M;
+  SphericalSurface(const natural_t nrows, const natural_t ncols);
   
-  SphericalSurface(const uint32_t N, const uint32_t M);
+  std::vector<real_t>& operator[](const int index );
   
-  std::vector<double>& operator[](const int index );
+  natural_t nrows();
+  natural_t ncols();
   
-  void changeNorthPole(double value);
-  void changeSouthPole(double value);
+  void changeNorthPole(const real_t value);
+  void changeSouthPole(const real_t value);
 
 private:
-  std::vector<std::vector<double>> values;
+  natural_t nrows_;
+  natural_t ncols_;
+  std::vector<std::vector<real_t>> values_;
 };
 
 class SphericalHarmonics
 {
-  const uint32_t N;
-  const uint32_t M;
+  SphericalHarmonics(const natural_t nmax, const natural_t mmax);
   
-  SphericalHarmonics(const uint32_t N, const uint32_t M);
+  std::vector<real_t>& operator[](const natural_t index );
   
-  std::vector<double>& operator[](const int index );
+  natural_t nmax();
+  natural_t mmax();
+  
 private:
-  std::vector<complex_t> values;
+  natural_t nmax_;
+  natural_t mmax_;
+  std::vector<complex_t> values_;
 };
 
 class Spharm
 {
-  static std::vector<double> an; 
-  static std::vector<double> bnm;
+public:
+  static std::vector<real_t> an; // Legendre Polynomial Coefficents
+  static std::vector<real_t> bnm; // Associated Legendre Polynomial Coefficients
+  static std::vector<real_t> cnm;
+  
+  static void compute_an(const natural_t n_max);
+  static void compute_bnm(const natural_t n_max);
+  static void compute_cnm(const natural_t n_max);
+  
+  static complex_t associated_legendre(const natural_t n, const natural_t m, const complex_t value);
   
   static SphericalHarmonics spharm_transform(const SphericalSurface& spherical_surface);
   static SphericalSurface ispharm_transform(const SphericalHarmonics& spherical_harmonics);
