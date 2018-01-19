@@ -10,6 +10,8 @@
 #include <vector>
 #include <map>
 #include <cmath>
+#include <array>
+#include <iostream>
 
 #include "types.h"
 
@@ -29,7 +31,8 @@ private:
 class PrimeFactors
 {
 public: 
-  static std::vector<natural_t> compute(const natural_t n);
+  static std::vector<natural_t> compute(natural_t n);
+  static bool is_prime(const natural_t n);
 
 private:
   static const natural_t MAX_MEMOISATION_N;
@@ -37,8 +40,11 @@ private:
   
   static std::vector<natural_t> primes_;
   
+  static bool is_prime_memo(const natural_t n);
   static bool compute_primes(const natural_t n);
-  static bool is_prime(const natural_t n);
+  inline static void check_divisor(natural_t &n, 
+                                   const natural_t divisor, 
+                                   std::vector<natural_t> &divisors);
 };
 
 }

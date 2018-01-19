@@ -11,7 +11,7 @@ namespace hyperspharm
 {
   
 const natural_t Factorial::MAX_MEMOISATION_N = 1024;
-std::vector<real_t> Factorial::factorials_ = {0};
+std::vector<real_t> Factorial::factorials_ = {1};
   
 real_t Factorial::get(const natural_t n)
 {
@@ -29,12 +29,12 @@ real_t Factorial::get(const natural_t n)
 }
 
 const natural_t PrimeFactors::MAX_MEMOISATION_N = 1024;
-natural_t PrimeFactors::max_prime_checked_ = 12;
+natural_t PrimeFactors::max_prime_checked_ = 7;
 std::vector<natural_t> PrimeFactors::primes_ = {2, 3, 5, 7};
 
-std::vector<natural_t> PrimeFactors::compute(const natural_t n)
+std::vector<natural_t> PrimeFactors::compute(natural_t n)
 {
-  natural_t sqrt_n = std::floor(std::sqrt(n));
+  const natural_t sqrt_n = std::floor(std::sqrt(n));
   
   bool max_memo_reached = false;
   if ((max_prime_checked_ < sqrt_n))
@@ -43,58 +43,51 @@ std::vector<natural_t> PrimeFactors::compute(const natural_t n)
   }
   
   std::vector<natural_t> divisors;
+  for (auto divisor : primes_)
+  {
+    if ((sqrt_n < divisor) || (n < divisor)) {break;}
+    check_divisor(n, divisor, divisors);
+  }
+  
   if (max_memo_reached)
   {
-    // TODO: Implement factorization for number bigger than MAX_MEMOISATION_N ** 2
-  }
-  else
-  {
-    for (auto divisor : primes_)
+    std::cout << "Careful: PrimeFactors::compute was not designed for large number \n"
+              << "         the computation may take a really long time\n";
+    for (natural_t divisor = max_prime_checked_ + 1; divisor < sqrt_n; divisor++)
     {
-      if(sqrt_n < divisor)
+      if ((sqrt_n < divisor) || (n < divisor)) {break;}
+      if (is_prime(divisor))
       {
-        break;
-      }
-      if ((n % divisor) == 0)
-      {
-        // TODO: Implement finding order of divisor and divisor bigger tha sqrt(n)
-        divisors.push_back(divisor);
+        check_divisor(n, divisor, divisors);
       }
     }
   }
   
+  if (n > 1) {divisors.push_back(n);}
   
   return divisors;
 }
 
-bool PrimeFactors::compute_primes(const natural_t n)
+bool PrimeFactors::is_prime(const natural_t n)
 {
-  if (primes_.size() >= MAX_MEMOISATION_N)
+  if (n < 2) {return false;}
+  if (2 == n) {return true;}
+  natural_t sqrt_n = std::floor(std::sqrt(n));
+  for (natural_t divisor = 3; divisor < sqrt_n; divisor += 2)
   {
-    return true;
-  }
-  // TODO: Can be greatly optimized 
-  bool max_memo_reached = false;
-  for (natural_t i = max_prime_checked_ + 1; i <= n; i+= 2)
-  {
-    std::cout << i << std::endl;
-    max_prime_checked_ = i;
-    if (is_prime(i))
+    if(sqrt_n < divisor)
     {
-      primes_.push_back(i);
-      if (primes_.size() >= MAX_MEMOISATION_N)
-      {
-        max_memo_reached = true;
-        break;
-      }
+      return true;
+    }
+    if ((n % divisor) == 0)
+    {
+      return false;
     }
   }
-  
-  max_prime_checked_++;
-  return max_memo_reached;
+  return true;
 }
 
-bool PrimeFactors::is_prime(const natural_t n)
+bool PrimeFactors::is_prime_memo(const natural_t n)
 {
   // This function assumes that all the primes number smaller or equal to
   // sqrt(n) are known
@@ -113,5 +106,46 @@ bool PrimeFactors::is_prime(const natural_t n)
   return true;
 }
 
+bool PrimeFactors::compute_primes(const natural_t n)
+{
+  static natural_t wheel_index = 0;
+  const std::array<natural_t, 8> wheel_index_values = {{4, 2, 4, 2, 4, 6, 2, 6}};
   
+  if (primes_.size() >= MAX_MEMOISATION_N)
+  {
+    return true;
+  }
+  while (max_prime_checked_ < n)
+  {
+    max_prime_checked_ += wheel_index_values[wheel_index];
+    if ((++wheel_index) == 8) {wheel_index = 0;}
+    
+    std::cout << max_prime_checked_ << std::endl;
+    if (is_prime_memo(max_prime_checked_))
+    {
+      primes_.push_back(max_prime_checked_);
+      if (primes_.size() >= MAX_MEMOISATION_N)
+      {
+        return true;
+        break;
+      }
+    }
+  }
+  
+  return false;
+}
+
+inline void PrimeFactors::check_divisor(natural_t &n,
+                                        const natural_t divisor, 
+                                        std::vector<natural_t> &divisors)
+{
+  auto div = std::ldiv(n, divisor);
+  while (div.rem == 0)
+  {
+    n = div.quot;
+    divisors.push_back(divisor);
+    div = std::ldiv(n, divisor);
+  }
+}
+
 }

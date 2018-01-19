@@ -13,7 +13,7 @@
 
 namespace hyperspharm
 {
-  typedef uint32_t natural_t;
+  typedef uint64_t natural_t;
   typedef double real_t;
   typedef std::complex<real_t> complex_t;
   
