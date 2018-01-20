@@ -31,6 +31,54 @@ TEST(Factorial, getWithMemo)
   EXPECT_FLOAT_EQ(Factorial::get(22), 1124000727777607680000.0);
   EXPECT_FLOAT_EQ(Factorial::get(23), 25852016738884976640000.0);
 }
+
+TEST(PrimeFactors, SmallNonPrime) 
+{
+  natural_t number = 12;
+  std::vector<natural_t> expected_result = {2, 2, 3};
+  auto result = PrimeFactors::compute(number);
+  EXPECT_EQ(result.size(), expected_result.size());
+  for (unsigned int index = 0; index < expected_result.size(); index++)
+  {
+    EXPECT_EQ(result[index], expected_result[index]);
+  }
+}
+
+TEST(PrimeFactors, SmallPrime) 
+{
+  natural_t number = 13;
+  std::vector<natural_t> expected_result = {13};
+  auto result = PrimeFactors::compute(number);
+  EXPECT_EQ(result.size(), expected_result.size());
+  for (unsigned int index = 0; index < expected_result.size(); index++)
+  {
+    EXPECT_EQ(result[index], expected_result[index]);
+  }
+}
+
+TEST(PrimeFactors, BigNonPrime) 
+{
+  natural_t number = 1245487;
+  std::vector<natural_t> expected_result = {31, 40177};
+  auto result = PrimeFactors::compute(number);
+  EXPECT_EQ(result.size(), expected_result.size());
+  for (unsigned int index = 0; index < expected_result.size(); index++)
+  {
+    EXPECT_EQ(result[index], expected_result[index]);
+  }
+}
+
+TEST(PrimeFactors, BigPrime) 
+{
+  natural_t number = 104729;
+  std::vector<natural_t> expected_result = {104729};
+  auto result = PrimeFactors::compute(number);
+  EXPECT_EQ(result.size(), expected_result.size());
+  for (unsigned int index = 0; index < expected_result.size(); index++)
+  {
+    EXPECT_EQ(result[index], expected_result[index]);
+  }
+}
   
   
 }

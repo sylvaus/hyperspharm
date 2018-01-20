@@ -120,7 +120,6 @@ bool PrimeFactors::compute_primes(const natural_t n)
     max_prime_checked_ += wheel_index_values[wheel_index];
     if ((++wheel_index) == 8) {wheel_index = 0;}
     
-    std::cout << max_prime_checked_ << std::endl;
     if (is_prime_memo(max_prime_checked_))
     {
       primes_.push_back(max_prime_checked_);
