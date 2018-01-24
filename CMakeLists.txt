@@ -14,6 +14,8 @@ include_directories(include)
 
 add_library(libfft SHARED src/fft.cpp)
 add_library(libutils SHARED src/utils.cpp)
+add_library(libspharms SHARED src/spharms.cpp)
+target_link_libraries(libspharms libutils)
 
 add_executable(main src/main.cpp)
 target_link_libraries(main libfft libutils)

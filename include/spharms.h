@@ -11,6 +11,7 @@
 
 #include <stdint.h>
 #include <vector>
+#include "utils.h"
 #include "types.h"
 
 namespace hyperspharm
@@ -56,18 +57,28 @@ private:
   std::vector<complex_t> values_;
 };
 
+class LegendrePoly
+{
+  static real_t get(const natural_t l, const complex_t value);
+  static real_t get_associated(const natural_t l, 
+                               const natural_t m, 
+                               const complex_t value);
+
+#if !defined(UNITTEST)
+private:
+#endif
+  
+  static std::vector<std::vector<real_t>> alk_; // Legendre Polynomial Coefficents
+  
+  static void compute_all_alk(const natural_t l_max);
+};
+
 class Spharm
 {
 public:
-  static std::vector<real_t> an; // Legendre Polynomial Coefficents
-  static std::vector<real_t> bnm; // Associated Legendre Polynomial Coefficients
-  static std::vector<real_t> cnm;
+  static void compute_clmk(const natural_t l_max);
   
-  static void compute_an(const natural_t n_max);
-  static void compute_bnm(const natural_t n_max);
-  static void compute_cnm(const natural_t n_max);
   
-  static complex_t associated_legendre(const natural_t n, const natural_t m, const complex_t value);
   
   static SphericalHarmonics spharm_transform(const SphericalSurface& spherical_surface);
   static SphericalSurface ispharm_transform(const SphericalHarmonics& spherical_harmonics);
