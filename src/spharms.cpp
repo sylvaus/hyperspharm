@@ -12,14 +12,24 @@
 namespace hyperspharm
 {
   
-std::vector<std::vector<real_t>> LegendrePoly::alk_ = {{0}, {-0.5, 1.5}};  
+std::vector<std::vector<real_t>> LegendrePoly::alk_ = {{1}, {1}};  
 
-/*
-real_t LegendrePoly::get(const natural_t l, const complex_t value)
+
+real_t LegendrePoly::get(const natural_t l, const real_t value)
 {
-  return 0;
+  compute_all_alk(l);
+  
+  real_t k = ((l % 2) == 0) ? 0 : 1;
+  real_t result = 0;
+  for (real_t coeff : alk_[l])
+  {
+    result += coeff * pow(value, k);
+    k += 2.0;
+  }
+  return result;
 }
 
+/*
 real_t LegendrePoly::get_associated(const natural_t l, 
                                     const natural_t m, 
                                     const complex_t value)
@@ -43,7 +53,11 @@ real_t LegendrePoly::get_associated(const natural_t l,
  *   => * a_{l, 0} = -(l-1)a_{l-2, 0} / l
  *      * a_{l, l} = (2l-1)a_{l-1, l-1} / l
  *      * a_{l, l-1} = 0 since l + l-1 is odd
- *      * a_{l, k} = (2l-1)a_{l-1, k-1} / l - -(l-1)a_{l-2, k} / l for the other k
+ *      * a_{l, k} = (2l-1)a_{l-1, k-1} / l -(l-1)a_{l-2, k} / l for the other k
+ * 
+ * Moreover, only the non zero values are saved
+ * 
+ * TODO: Add limitation on the size of alk_
  * 
  * @param l_max maximum order of Legendre Polynomial 
  */
@@ -51,23 +65,34 @@ void LegendrePoly::compute_all_alk(const natural_t l_max)
 {
   for (natural_t l = alk_.size(); l <= l_max; l++)
   {
-    
     const real_t p_l_2_coeff = -(static_cast<real_t>(l) - 1.0) / static_cast<real_t>(l);
     const real_t p_l_1_coeff = (2.0 * static_cast<real_t>(l) - 1.0) / static_cast<real_t>(l);
     
     std::vector<real_t> ak;
-    ak.reserve(l+1);
-    ak.push_back(p_l_2_coeff * alk_[l-2][0]);
-    
-    for (natural_t k = 1; k < l - 1; k++)
+    if ((l % 2) == 0)
     {
-      ak.push_back((p_l_1_coeff * alk_[l-1][k-1]) + (p_l_2_coeff * alk_[l-2][k])); 
+      const natural_t nb_non_zero_coeffs = (l/2) + 1;
+      ak.reserve(nb_non_zero_coeffs);
+      ak.push_back(p_l_2_coeff * alk_[l-2][0]);
+      for (natural_t k = 1; k < nb_non_zero_coeffs - 1; k++)
+      {
+        ak.push_back((p_l_1_coeff * alk_[l-1][k-1]) + (p_l_2_coeff * alk_[l-2][k])); 
+      }
+      ak.push_back(p_l_1_coeff * alk_[l-1][nb_non_zero_coeffs - 2]);
     }
-    ak.push_back(0);
-    ak.push_back(p_l_1_coeff * alk_[l-1][l-1]);
+    else
+    {
+      const natural_t nb_non_zero_coeffs = (l+1) / 2;
+      ak.reserve(nb_non_zero_coeffs);
+      for (natural_t k = 0; k < nb_non_zero_coeffs - 1; k++)
+      {
+        ak.push_back((p_l_1_coeff * alk_[l-1][k]) + (p_l_2_coeff * alk_[l-2][k])); 
+      }
+      ak.push_back(p_l_1_coeff * alk_[l-1][nb_non_zero_coeffs - 1]);
+    }
+    
     alk_.push_back(ak);
   }
-  
 }
 
 }

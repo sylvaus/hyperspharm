@@ -59,15 +59,13 @@ private:
 
 class LegendrePoly
 {
-  static real_t get(const natural_t l, const complex_t value);
+public:
+  static real_t get(const natural_t l, const real_t value);
   static real_t get_associated(const natural_t l, 
                                const natural_t m, 
-                               const complex_t value);
+                               const real_t value);
 
-#if !defined(UNITTEST)
 private:
-#endif
-  
   static std::vector<std::vector<real_t>> alk_; // Legendre Polynomial Coefficents
   
   static void compute_all_alk(const natural_t l_max);

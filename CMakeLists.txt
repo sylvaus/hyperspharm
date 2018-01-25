@@ -28,6 +28,6 @@ if (tests)
   
   file(GLOB TESTS_SRC ${PROJECT_SOURCE_DIR}/tests/*.cpp)
   add_executable(tests ${TESTS_SRC})
-  target_link_libraries(tests libfft libutils ${GTEST_BOTH_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
+  target_link_libraries(tests libfft libutils libspharms ${GTEST_BOTH_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
   add_test(AllTestsInFoo tests)
 endif()
