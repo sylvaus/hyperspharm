@@ -1,4 +1,4 @@
-#include "spharms.h"
+#include "legendre.h"
 #include "gtest/gtest.h"
 
 namespace hyperspharm

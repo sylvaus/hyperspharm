@@ -14,8 +14,8 @@ include_directories(include)
 
 add_library(libfft SHARED src/fft.cpp)
 add_library(libutils SHARED src/utils.cpp)
-add_library(libspharms SHARED src/spharms.cpp)
-target_link_libraries(libspharms libutils)
+add_library(liblegendre SHARED src/legendre.cpp)
+target_link_libraries(liblegendre libutils)
 
 add_executable(main src/main.cpp)
 target_link_libraries(main libfft libutils)
@@ -28,6 +28,6 @@ if (tests)
   
   file(GLOB TESTS_SRC ${PROJECT_SOURCE_DIR}/tests/*.cpp)
   add_executable(tests ${TESTS_SRC})
-  target_link_libraries(tests libfft libutils libspharms ${GTEST_BOTH_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
+  target_link_libraries(tests libfft libutils liblegendre ${GTEST_BOTH_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
   add_test(AllTestsInFoo tests)
 endif()
