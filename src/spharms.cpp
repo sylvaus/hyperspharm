@@ -29,13 +29,46 @@ real_t LegendrePoly::get(const natural_t l, const real_t value)
   return result;
 }
 
-/*
+
 real_t LegendrePoly::get_associated(const natural_t l, 
-                                    const natural_t m, 
-                                    const complex_t value)
+                                    const integer_t m, 
+                                    const real_t value)
 {
-  return 0;
-}*/
+  real_t result = 0;
+  const natural_t abs_m = std::abs(m);
+  
+  for (natural_t k = 0; k <= (l-abs_m); k++)
+  {
+    result += (Factorial::get(k + abs_m) / Factorial::get(k)) * coeff(l, m+k) * pow(value, k);
+  }
+  
+  if (m < 0)
+  {
+    if ((m % 2) == 0) 
+    {
+      result *= (Factorial::get(l + m) / Factorial::get(l - m));
+    }
+    else
+    {
+      result *= -(Factorial::get(l + m) / Factorial::get(l - m));
+    }
+  }
+  
+  return pow((1 - value * value), static_cast<real_t>(abs_m) / 2.0) * result;
+}
+
+real_t LegendrePoly::coeff(const natural_t l, const natural_t k)
+{
+  compute_all_alk(l);
+  if ((l % 2) == 0)
+  {
+    return ((k % 2) == 0) ? alk_[l/2][0] : 0;
+  }
+  else
+  {
+    return ((k % 2) == 1) ? alk_[(l-1)/2][0] : 0;
+  }
+}
 
 /**
  * @brief Compute the polynomial coefficients of all Legendre polynomial of order inferior to l_max
