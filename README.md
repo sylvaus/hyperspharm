@@ -34,3 +34,7 @@ TODO:
     sudo make
     sudo cp *.a /usr/lib
     ```
+  - gsl library:
+    ```
+    sudo apt-get install libgsl2 gsl-*
+    ```

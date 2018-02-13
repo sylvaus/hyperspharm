@@ -17,6 +17,12 @@
 
 namespace hyperspharm
 {
+
+template<class T>
+bool almost_equal(T x, T y, T tolerance)
+{
+    return std::abs(x-y) <= tolerance;
+}
  
 class Factorial
 {
