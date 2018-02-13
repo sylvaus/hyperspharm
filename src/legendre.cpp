@@ -28,20 +28,20 @@ real_t LegendrePoly::get(const natural_t l, const real_t x)
 real_t LegendrePoly::get_associated(const natural_t l, 
                                     const integer_t m, 
                                     const real_t x)
-{
+{  
+  const natural_t abs_m = std::abs(m);
+  if (abs_m > l)
+  {
+    throw std::invalid_argument( "Associated Legendre Polynomial: abs(m) must be smaller or equal to l" );
+  }
+ 
   if (almost_equal(std::abs(x), static_cast<real_t>(1.0), static_cast<real_t>(0.000001))) 
   {
     if (m != 0) {return 0;}
     if (x > 0.0) {return 1.0;}
     else {return minus_one_power(l);}
   }
-  
-  const natural_t abs_m = std::abs(m);
-  if (abs_m > l)
-  {
-    throw std::invalid_argument( "Associated Legendre Polynomial: abs(m) must be smaller or equal to l" );
-  }
-  
+ 
   const real_t sqrt_1_x2 = sqrt(1.0 - x*x);
   const real_t half_sqrt_1_x2 = sqrt_1_x2 * 0.5;
   const real_t inv_half_sqrt_1_x2 = x / half_sqrt_1_x2;
