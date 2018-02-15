@@ -9,10 +9,10 @@ namespace hyperspharm
 
 /**
  * @brief Evaluate Legendre Polynomial 2,1 for the value x
- * This function is used to check if the gsl Legendre Polynomial implementation
+ * This function is used to check if the Legendre Polynomial implementation
  * follows the Wikipedia notation: https://en.wikipedia.org/wiki/Associated_Legendre_polynomials
  * 
- * @param x value for which the Legendre Polynomial 2,1 should be avaluated
+ * @param x value for which the Legendre Polynomial 2,1 should be evaluated
  * @return hyperspharm::real_t
  */
 real_t P_2_1(real_t x)

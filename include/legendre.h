@@ -24,6 +24,14 @@ public:
   static real_t get_associated(const natural_t l, 
                                const integer_t m, 
                                const real_t x);
+  static real_t get_fully_normalized(const natural_t l, 
+                                     const integer_t m, 
+                                     const real_t x);
+  
+private:
+  static void check_parameters(const natural_t l, 
+                               const integer_t m, 
+                               const real_t x);
 };
 
 }
