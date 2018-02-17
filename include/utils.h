@@ -19,9 +19,21 @@ namespace hyperspharm
 {
 
 template<class T>
-bool almost_equal(T x, T y, T tolerance)
+bool inline almost_equal(T x, T y, T tolerance)
 {
     return std::abs(x-y) <= tolerance;
+}
+
+template<class T>
+bool inline is_even(const T x)
+{
+    return (0 == (x % 2));
+}
+
+template<class T>
+real_t inline minus_one_power(const T m)
+{
+  return (is_even(m)) ? 1.0 : -1.0;
 }
  
 class Factorial

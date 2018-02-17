@@ -4,9 +4,12 @@
 #include <chrono>
 #include <iostream>
 
-namespace hyperspharm
-{
+using hyperspharm::LegendrePoly;
 
+namespace hyperspharm_legendrepoly_test
+{
+const hyperspharm::real_t sqrt_4_pi = sqrt(4.0 * M_PI);
+  
 /**
  * @brief Evaluate Legendre Polynomial 2,1 for the value x
  * This function is used to check if the Legendre Polynomial implementation
@@ -15,7 +18,7 @@ namespace hyperspharm
  * @param x value for which the Legendre Polynomial 2,1 should be evaluated
  * @return hyperspharm::real_t
  */
-real_t P_2_1(real_t x)
+hyperspharm::real_t P_2_1(hyperspharm::real_t x)
 {
   return -3.0 * x * pow(1.0 - pow(x, 2), 0.5);
 }
@@ -78,6 +81,87 @@ TEST(AssociatedLegendre, HighOrder)
   EXPECT_FLOAT_EQ(LegendrePoly::get_associated(90, 80, 0.5), gsl_sf_legendre_Plm(90, 80, 0.5));
   EXPECT_FLOAT_EQ(LegendrePoly::get_associated(90, 89, -0.5), gsl_sf_legendre_Plm(90, 89, -0.5));
   EXPECT_FLOAT_EQ(LegendrePoly::get_associated(90, 89, 0.5), gsl_sf_legendre_Plm(90, 89, 0.5));
+}
+
+TEST(FullyNormalizedAssociatedLegendre, LowOrderSectorial) // l==m 
+{
+  
+  EXPECT_FLOAT_EQ(LegendrePoly::get_fully_normalized(1, 1, 0) / sqrt_4_pi, gsl_sf_legendre_sphPlm(1, 1, 0));
+  EXPECT_FLOAT_EQ(LegendrePoly::get_fully_normalized(1, 1, 0.5) / sqrt_4_pi, gsl_sf_legendre_sphPlm(1, 1, 0.5));
+  EXPECT_FLOAT_EQ(LegendrePoly::get_fully_normalized(1, 1, 1) / sqrt_4_pi, gsl_sf_legendre_sphPlm(1, 1, 1));
+  EXPECT_FLOAT_EQ(LegendrePoly::get_fully_normalized(2, 2, 0) / sqrt_4_pi, gsl_sf_legendre_sphPlm(2, 2, 0));
+  EXPECT_FLOAT_EQ(LegendrePoly::get_fully_normalized(2, 2, 0.5) / sqrt_4_pi, gsl_sf_legendre_sphPlm(2, 2, 0.5));
+  EXPECT_FLOAT_EQ(LegendrePoly::get_fully_normalized(2, 2, 1) / sqrt_4_pi, gsl_sf_legendre_sphPlm(2, 2, 1));
+  EXPECT_FLOAT_EQ(LegendrePoly::get_fully_normalized(3, 3, 0) / sqrt_4_pi, gsl_sf_legendre_sphPlm(3, 3, 0));
+  EXPECT_FLOAT_EQ(LegendrePoly::get_fully_normalized(3, 3, 0.5) / sqrt_4_pi, gsl_sf_legendre_sphPlm(3, 3, 0.5));
+  EXPECT_FLOAT_EQ(LegendrePoly::get_fully_normalized(3, 3, 1) / sqrt_4_pi, gsl_sf_legendre_sphPlm(3, 3, 1));
+}
+
+TEST(FullyNormalizedAssociatedLegendre, LowOrderNonSectorial) // l!=m 
+{
+  EXPECT_FLOAT_EQ(LegendrePoly::get_fully_normalized(1, 0, 0) / sqrt_4_pi, gsl_sf_legendre_sphPlm(1, 0, 0));
+  EXPECT_FLOAT_EQ(LegendrePoly::get_fully_normalized(1, 0, 0.5) / sqrt_4_pi, gsl_sf_legendre_sphPlm(1, 0, 0.5));
+  EXPECT_FLOAT_EQ(LegendrePoly::get_fully_normalized(1, 0, 1) / sqrt_4_pi, gsl_sf_legendre_sphPlm(1, 0, 1));
+  EXPECT_FLOAT_EQ(LegendrePoly::get_fully_normalized(2, 1, 0) / sqrt_4_pi, gsl_sf_legendre_sphPlm(2, 1, 0));
+  EXPECT_FLOAT_EQ(LegendrePoly::get_fully_normalized(2, 1, 0.5) / sqrt_4_pi, gsl_sf_legendre_sphPlm(2, 1, 0.5));
+  EXPECT_FLOAT_EQ(LegendrePoly::get_fully_normalized(2, 1, 1) / sqrt_4_pi, gsl_sf_legendre_sphPlm(2, 1, 1));
+  EXPECT_FLOAT_EQ(LegendrePoly::get_fully_normalized(2, 0, 0) / sqrt_4_pi, gsl_sf_legendre_sphPlm(2, 0, 0));
+  EXPECT_FLOAT_EQ(LegendrePoly::get_fully_normalized(2, 0, 0.5) / sqrt_4_pi, gsl_sf_legendre_sphPlm(2, 0, 0.5));
+  EXPECT_FLOAT_EQ(LegendrePoly::get_fully_normalized(2, 0, 0.8) / sqrt_4_pi, gsl_sf_legendre_sphPlm(2, 0, 0.8));
+  EXPECT_FLOAT_EQ(LegendrePoly::get_fully_normalized(2, 0, 1) / sqrt_4_pi, gsl_sf_legendre_sphPlm(2, 0, 1));
+  EXPECT_FLOAT_EQ(LegendrePoly::get_fully_normalized(3, 2, 0) / sqrt_4_pi, gsl_sf_legendre_sphPlm(3, 2, 0));
+  EXPECT_FLOAT_EQ(LegendrePoly::get_fully_normalized(3, 2, 0.5) / sqrt_4_pi, gsl_sf_legendre_sphPlm(3, 2, 0.5));
+  EXPECT_FLOAT_EQ(LegendrePoly::get_fully_normalized(3, 2, 0.8) / sqrt_4_pi, gsl_sf_legendre_sphPlm(3, 2, 0.8));
+  EXPECT_FLOAT_EQ(LegendrePoly::get_fully_normalized(3, 2, 1) / sqrt_4_pi, gsl_sf_legendre_sphPlm(3, 2, 1));
+  EXPECT_FLOAT_EQ(LegendrePoly::get_fully_normalized(3, 1, 0) / sqrt_4_pi, gsl_sf_legendre_sphPlm(3, 1, 0));
+  EXPECT_FLOAT_EQ(LegendrePoly::get_fully_normalized(3, 1, 0.5) / sqrt_4_pi, gsl_sf_legendre_sphPlm(3, 1, 0.5));
+  EXPECT_FLOAT_EQ(LegendrePoly::get_fully_normalized(3, 1, 0.8) / sqrt_4_pi, gsl_sf_legendre_sphPlm(3, 1, 0.8));
+  EXPECT_FLOAT_EQ(LegendrePoly::get_fully_normalized(3, 1, 1) / sqrt_4_pi, gsl_sf_legendre_sphPlm(3, 1, 1));
+}
+
+TEST(FullyNormalizedAssociatedLegendre, HighOrderSectorial) // l==m 
+{
+  
+  EXPECT_FLOAT_EQ(LegendrePoly::get_fully_normalized(100, 100, 0) / sqrt_4_pi, gsl_sf_legendre_sphPlm(100, 100, 0));
+  EXPECT_FLOAT_EQ(LegendrePoly::get_fully_normalized(100, 100, 0.5) / sqrt_4_pi, gsl_sf_legendre_sphPlm(100, 100, 0.5));
+  EXPECT_FLOAT_EQ(LegendrePoly::get_fully_normalized(100, 100, 1) / sqrt_4_pi, gsl_sf_legendre_sphPlm(100, 100, 1));
+  EXPECT_FLOAT_EQ(LegendrePoly::get_fully_normalized(200, 200, 0) / sqrt_4_pi, gsl_sf_legendre_sphPlm(200, 200, 0));
+  EXPECT_FLOAT_EQ(LegendrePoly::get_fully_normalized(200, 200, 0.5) / sqrt_4_pi, gsl_sf_legendre_sphPlm(200, 200, 0.5));
+  EXPECT_FLOAT_EQ(LegendrePoly::get_fully_normalized(200, 200, 1) / sqrt_4_pi, gsl_sf_legendre_sphPlm(200, 200, 1));
+  EXPECT_FLOAT_EQ(LegendrePoly::get_fully_normalized(300, 300, 0) / sqrt_4_pi, gsl_sf_legendre_sphPlm(300, 300, 0));
+  EXPECT_FLOAT_EQ(LegendrePoly::get_fully_normalized(300, 300, 0.5) / sqrt_4_pi, gsl_sf_legendre_sphPlm(300, 300, 0.5));
+  EXPECT_FLOAT_EQ(LegendrePoly::get_fully_normalized(300, 300, 1) / sqrt_4_pi, gsl_sf_legendre_sphPlm(300, 300, 1));
+  EXPECT_FLOAT_EQ(LegendrePoly::get_fully_normalized(101, 101, 0) / sqrt_4_pi, gsl_sf_legendre_sphPlm(101, 101, 0));
+  EXPECT_FLOAT_EQ(LegendrePoly::get_fully_normalized(101, 101, 0.5) / sqrt_4_pi, gsl_sf_legendre_sphPlm(101, 101, 0.5));
+  EXPECT_FLOAT_EQ(LegendrePoly::get_fully_normalized(101, 101, 1) / sqrt_4_pi, gsl_sf_legendre_sphPlm(101, 101, 1));
+  EXPECT_FLOAT_EQ(LegendrePoly::get_fully_normalized(201, 201, 0) / sqrt_4_pi, gsl_sf_legendre_sphPlm(201, 201, 0));
+  EXPECT_FLOAT_EQ(LegendrePoly::get_fully_normalized(201, 201, 0.5) / sqrt_4_pi, gsl_sf_legendre_sphPlm(201, 201, 0.5));
+  EXPECT_FLOAT_EQ(LegendrePoly::get_fully_normalized(201, 201, 1) / sqrt_4_pi, gsl_sf_legendre_sphPlm(201, 201, 1));
+  EXPECT_FLOAT_EQ(LegendrePoly::get_fully_normalized(301, 301, 0) / sqrt_4_pi, gsl_sf_legendre_sphPlm(301, 301, 0));
+  EXPECT_FLOAT_EQ(LegendrePoly::get_fully_normalized(301, 301, 0.5) / sqrt_4_pi, gsl_sf_legendre_sphPlm(301, 301, 0.5));
+  EXPECT_FLOAT_EQ(LegendrePoly::get_fully_normalized(301, 301, 1) / sqrt_4_pi, gsl_sf_legendre_sphPlm(301, 301, 1));
+}
+
+TEST(FullyNormalizedAssociatedLegendre, HighOrderNonSectorial) // l!=m 
+{
+  EXPECT_FLOAT_EQ(LegendrePoly::get_fully_normalized(100, 0, 0) / sqrt_4_pi, gsl_sf_legendre_sphPlm(100, 0, 0));
+  EXPECT_FLOAT_EQ(LegendrePoly::get_fully_normalized(100, 0, 0.5) / sqrt_4_pi, gsl_sf_legendre_sphPlm(100, 0, 0.5));
+  EXPECT_FLOAT_EQ(LegendrePoly::get_fully_normalized(100, 0, 1) / sqrt_4_pi, gsl_sf_legendre_sphPlm(100, 0, 1));
+  EXPECT_FLOAT_EQ(LegendrePoly::get_fully_normalized(200, 100, 0) / sqrt_4_pi, gsl_sf_legendre_sphPlm(200, 100, 0));
+  EXPECT_FLOAT_EQ(LegendrePoly::get_fully_normalized(200, 100, 0.5) / sqrt_4_pi, gsl_sf_legendre_sphPlm(200, 100, 0.5));
+  EXPECT_FLOAT_EQ(LegendrePoly::get_fully_normalized(200, 100, 1) / sqrt_4_pi, gsl_sf_legendre_sphPlm(200, 100, 1));
+  EXPECT_FLOAT_EQ(LegendrePoly::get_fully_normalized(200, 0, 0) / sqrt_4_pi, gsl_sf_legendre_sphPlm(200, 0, 0));
+  EXPECT_FLOAT_EQ(LegendrePoly::get_fully_normalized(200, 0, 0.5) / sqrt_4_pi, gsl_sf_legendre_sphPlm(200, 0, 0.5));
+  EXPECT_FLOAT_EQ(LegendrePoly::get_fully_normalized(200, 0, 0.8) / sqrt_4_pi, gsl_sf_legendre_sphPlm(200, 0, 0.8));
+  EXPECT_FLOAT_EQ(LegendrePoly::get_fully_normalized(200, 0, 1) / sqrt_4_pi, gsl_sf_legendre_sphPlm(200, 0, 1));
+  EXPECT_FLOAT_EQ(LegendrePoly::get_fully_normalized(300, 200, 0) / sqrt_4_pi, gsl_sf_legendre_sphPlm(300, 200, 0));
+  EXPECT_FLOAT_EQ(LegendrePoly::get_fully_normalized(300, 200, 0.5) / sqrt_4_pi, gsl_sf_legendre_sphPlm(300, 200, 0.5));
+  EXPECT_FLOAT_EQ(LegendrePoly::get_fully_normalized(300, 200, 0.8) / sqrt_4_pi, gsl_sf_legendre_sphPlm(300, 200, 0.8));
+  EXPECT_FLOAT_EQ(LegendrePoly::get_fully_normalized(300, 200, 1) / sqrt_4_pi, gsl_sf_legendre_sphPlm(300, 200, 1));
+  EXPECT_FLOAT_EQ(LegendrePoly::get_fully_normalized(300, 100, 0) / sqrt_4_pi, gsl_sf_legendre_sphPlm(300, 100, 0));
+  EXPECT_FLOAT_EQ(LegendrePoly::get_fully_normalized(300, 100, 0.5) / sqrt_4_pi, gsl_sf_legendre_sphPlm(300, 100, 0.5));
+  EXPECT_FLOAT_EQ(LegendrePoly::get_fully_normalized(300, 100, 0.8) / sqrt_4_pi, gsl_sf_legendre_sphPlm(300, 100, 0.8));
+  EXPECT_FLOAT_EQ(LegendrePoly::get_fully_normalized(300, 100, 1) / sqrt_4_pi, gsl_sf_legendre_sphPlm(300, 100, 1));
 }
 
 }

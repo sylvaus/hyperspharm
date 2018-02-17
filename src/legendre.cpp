@@ -13,12 +13,8 @@
 
 namespace hyperspharm
 {
-  
-real_t minus_one_power(const natural_t m)
-{
-  return ((m % 2) == 0) ? 1.0 : -1.0;
-}
 
+const real_t LegendrePoly::sqrt_4_pi = sqrt(4.0 * M_PI);
 
 real_t LegendrePoly::get(const natural_t l, const real_t x)
 {
@@ -30,8 +26,9 @@ real_t LegendrePoly::get_associated(const natural_t l,
                                     const integer_t m, 
                                     const real_t x)
 {  
+#ifndef NOCHECK
   check_parameters(l, m, x);
- 
+#endif
   if (almost_equal(std::abs(x), static_cast<real_t>(1.0), static_cast<real_t>(0.000001))) 
   {
     if (m != 0) {return 0;}
@@ -79,7 +76,9 @@ real_t LegendrePoly::get_fully_normalized(const natural_t l,
                                           const integer_t m, 
                                           const real_t x)
 {
+#ifndef NOCHECK
   check_parameters(l, m, x);
+#endif
   const natural_t abs_m = std::abs(m);
   
   // Compute N_m^m
@@ -98,7 +97,7 @@ real_t LegendrePoly::get_fully_normalized(const natural_t l,
   if (l == abs_m) {return n_m_m;}
   if (l == -abs_m) 
   {
-    if ((abs_m % 2) == 0) {return n_m_m;}
+    if (is_even(abs_m)) {return n_m_m;}
     else {return -n_m_m;}
   }
   
@@ -108,17 +107,21 @@ real_t LegendrePoly::get_fully_normalized(const natural_t l,
   real_t n_m_1_m = x * sqrt((2.0 * abs_m_real) + 3.0) * n_m_m;
   for (natural_t i = (abs_m + 2); i <= l; i++)
   {
-    const real_t coeff_n_m_m = 0;
-    const real_t coeff_n_m_1_m = 0;
-    real_t tmp = n_m_1_m;
-    n_m_1_m = (coeff_n_m_1_m * n_m_1_m) + 
+    const real_t coeff_n_m_1_m = sqrt(static_cast<real_t>((4 * i * i) - 1) / // (2*i - 1) * (2*i + 1) = (2*i)²  - 1 = (4 * i²) -1
+                                      static_cast<real_t>((i - abs_m) * (i + abs_m))
+    );
+    const real_t coeff_n_m_m = sqrt(static_cast<real_t>(((2 * i) + 1) * (i - abs_m - 1) * (i + abs_m - 1))/
+                                    static_cast<real_t>((i - abs_m) * (i + abs_m) * ((2 * i) - 3))
+    );
+    const real_t tmp = n_m_1_m;
+    n_m_1_m = (coeff_n_m_1_m * x * n_m_1_m) - 
               (coeff_n_m_m * n_m_m);
     n_m_m = tmp;
   }
   
   if (m < 0) 
   {
-    if ((abs_m % 2) == 0) {return n_m_1_m;}
+    if (is_even(abs_m)) {return n_m_1_m;}
     else {return -n_m_1_m;}
   }
   else
