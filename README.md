@@ -8,18 +8,17 @@ Hyperspharm library
 
 Done:
   - Implemented small FFT library
-  - Write tests for FFT library
-  - Write Factorial function with memoisation
-  - Write Prime Factorization function with memoisation
-  
+  - Implement tests for FFT library
+  - Implement Factorial function with memoisation
+  - Implement Prime Factorization function with memoisation
+  - Implement Legendre Polynomial functions
 
 TODO:
-  - Write Legendre Polynomial functions with memoisation (Coefficient calculation done)
+  - Implement Spharm functions (and tests)
   - Write the hyperspharm equations 
-  - Try to simplify/speed up computation by finding link to FFT (1 week)
-  - Write the header files 
+  - Try to simplify/speed up computation by finding link to FFT
   - Implement the hypersharm functions 
-  - Write tests for the hypersharms functions
+  - Implement tests for the hypersharms functions
 
 ## Requirements
   - cmake >= 3.0.2
