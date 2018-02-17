@@ -164,4 +164,85 @@ TEST(FullyNormalizedAssociatedLegendre, HighOrderNonSectorial) // l!=m
   EXPECT_FLOAT_EQ(LegendrePoly::get_fully_normalized(300, 100, 1) / sqrt_4_pi, gsl_sf_legendre_sphPlm(300, 100, 1));
 }
 
+TEST(SpharmNormalizedAssociatedLegendre, LowOrderSectorial) // l==m 
+{
+  
+  EXPECT_FLOAT_EQ(LegendrePoly::get_spharm_normalized(1, 1, 0), gsl_sf_legendre_sphPlm(1, 1, 0));
+  EXPECT_FLOAT_EQ(LegendrePoly::get_spharm_normalized(1, 1, 0.5), gsl_sf_legendre_sphPlm(1, 1, 0.5));
+  EXPECT_FLOAT_EQ(LegendrePoly::get_spharm_normalized(1, 1, 1), gsl_sf_legendre_sphPlm(1, 1, 1));
+  EXPECT_FLOAT_EQ(LegendrePoly::get_spharm_normalized(2, 2, 0), gsl_sf_legendre_sphPlm(2, 2, 0));
+  EXPECT_FLOAT_EQ(LegendrePoly::get_spharm_normalized(2, 2, 0.5), gsl_sf_legendre_sphPlm(2, 2, 0.5));
+  EXPECT_FLOAT_EQ(LegendrePoly::get_spharm_normalized(2, 2, 1), gsl_sf_legendre_sphPlm(2, 2, 1));
+  EXPECT_FLOAT_EQ(LegendrePoly::get_spharm_normalized(3, 3, 0), gsl_sf_legendre_sphPlm(3, 3, 0));
+  EXPECT_FLOAT_EQ(LegendrePoly::get_spharm_normalized(3, 3, 0.5), gsl_sf_legendre_sphPlm(3, 3, 0.5));
+  EXPECT_FLOAT_EQ(LegendrePoly::get_spharm_normalized(3, 3, 1), gsl_sf_legendre_sphPlm(3, 3, 1));
+}
+
+TEST(SpharmNormalizedAssociatedLegendre, LowOrderNonSectorial) // l!=m 
+{
+  EXPECT_FLOAT_EQ(LegendrePoly::get_spharm_normalized(1, 0, 0), gsl_sf_legendre_sphPlm(1, 0, 0));
+  EXPECT_FLOAT_EQ(LegendrePoly::get_spharm_normalized(1, 0, 0.5), gsl_sf_legendre_sphPlm(1, 0, 0.5));
+  EXPECT_FLOAT_EQ(LegendrePoly::get_spharm_normalized(1, 0, 1), gsl_sf_legendre_sphPlm(1, 0, 1));
+  EXPECT_FLOAT_EQ(LegendrePoly::get_spharm_normalized(2, 1, 0), gsl_sf_legendre_sphPlm(2, 1, 0));
+  EXPECT_FLOAT_EQ(LegendrePoly::get_spharm_normalized(2, 1, 0.5), gsl_sf_legendre_sphPlm(2, 1, 0.5));
+  EXPECT_FLOAT_EQ(LegendrePoly::get_spharm_normalized(2, 1, 1), gsl_sf_legendre_sphPlm(2, 1, 1));
+  EXPECT_FLOAT_EQ(LegendrePoly::get_spharm_normalized(2, 0, 0), gsl_sf_legendre_sphPlm(2, 0, 0));
+  EXPECT_FLOAT_EQ(LegendrePoly::get_spharm_normalized(2, 0, 0.5), gsl_sf_legendre_sphPlm(2, 0, 0.5));
+  EXPECT_FLOAT_EQ(LegendrePoly::get_spharm_normalized(2, 0, 0.8), gsl_sf_legendre_sphPlm(2, 0, 0.8));
+  EXPECT_FLOAT_EQ(LegendrePoly::get_spharm_normalized(2, 0, 1), gsl_sf_legendre_sphPlm(2, 0, 1));
+  EXPECT_FLOAT_EQ(LegendrePoly::get_spharm_normalized(3, 2, 0), gsl_sf_legendre_sphPlm(3, 2, 0));
+  EXPECT_FLOAT_EQ(LegendrePoly::get_spharm_normalized(3, 2, 0.5), gsl_sf_legendre_sphPlm(3, 2, 0.5));
+  EXPECT_FLOAT_EQ(LegendrePoly::get_spharm_normalized(3, 2, 0.8), gsl_sf_legendre_sphPlm(3, 2, 0.8));
+  EXPECT_FLOAT_EQ(LegendrePoly::get_spharm_normalized(3, 2, 1), gsl_sf_legendre_sphPlm(3, 2, 1));
+  EXPECT_FLOAT_EQ(LegendrePoly::get_spharm_normalized(3, 1, 0), gsl_sf_legendre_sphPlm(3, 1, 0));
+  EXPECT_FLOAT_EQ(LegendrePoly::get_spharm_normalized(3, 1, 0.5), gsl_sf_legendre_sphPlm(3, 1, 0.5));
+  EXPECT_FLOAT_EQ(LegendrePoly::get_spharm_normalized(3, 1, 0.8), gsl_sf_legendre_sphPlm(3, 1, 0.8));
+  EXPECT_FLOAT_EQ(LegendrePoly::get_spharm_normalized(3, 1, 1), gsl_sf_legendre_sphPlm(3, 1, 1));
+}
+
+TEST(SpharmNormalizedAssociatedLegendre, HighOrderSectorial) // l==m 
+{
+  
+  EXPECT_FLOAT_EQ(LegendrePoly::get_spharm_normalized(100, 100, 0), gsl_sf_legendre_sphPlm(100, 100, 0));
+  EXPECT_FLOAT_EQ(LegendrePoly::get_spharm_normalized(100, 100, 0.5), gsl_sf_legendre_sphPlm(100, 100, 0.5));
+  EXPECT_FLOAT_EQ(LegendrePoly::get_spharm_normalized(100, 100, 1), gsl_sf_legendre_sphPlm(100, 100, 1));
+  EXPECT_FLOAT_EQ(LegendrePoly::get_spharm_normalized(200, 200, 0), gsl_sf_legendre_sphPlm(200, 200, 0));
+  EXPECT_FLOAT_EQ(LegendrePoly::get_spharm_normalized(200, 200, 0.5), gsl_sf_legendre_sphPlm(200, 200, 0.5));
+  EXPECT_FLOAT_EQ(LegendrePoly::get_spharm_normalized(200, 200, 1), gsl_sf_legendre_sphPlm(200, 200, 1));
+  EXPECT_FLOAT_EQ(LegendrePoly::get_spharm_normalized(300, 300, 0), gsl_sf_legendre_sphPlm(300, 300, 0));
+  EXPECT_FLOAT_EQ(LegendrePoly::get_spharm_normalized(300, 300, 0.5), gsl_sf_legendre_sphPlm(300, 300, 0.5));
+  EXPECT_FLOAT_EQ(LegendrePoly::get_spharm_normalized(300, 300, 1), gsl_sf_legendre_sphPlm(300, 300, 1));
+  EXPECT_FLOAT_EQ(LegendrePoly::get_spharm_normalized(101, 101, 0), gsl_sf_legendre_sphPlm(101, 101, 0));
+  EXPECT_FLOAT_EQ(LegendrePoly::get_spharm_normalized(101, 101, 0.5), gsl_sf_legendre_sphPlm(101, 101, 0.5));
+  EXPECT_FLOAT_EQ(LegendrePoly::get_spharm_normalized(101, 101, 1), gsl_sf_legendre_sphPlm(101, 101, 1));
+  EXPECT_FLOAT_EQ(LegendrePoly::get_spharm_normalized(201, 201, 0), gsl_sf_legendre_sphPlm(201, 201, 0));
+  EXPECT_FLOAT_EQ(LegendrePoly::get_spharm_normalized(201, 201, 0.5), gsl_sf_legendre_sphPlm(201, 201, 0.5));
+  EXPECT_FLOAT_EQ(LegendrePoly::get_spharm_normalized(201, 201, 1), gsl_sf_legendre_sphPlm(201, 201, 1));
+  EXPECT_FLOAT_EQ(LegendrePoly::get_spharm_normalized(301, 301, 0), gsl_sf_legendre_sphPlm(301, 301, 0));
+  EXPECT_FLOAT_EQ(LegendrePoly::get_spharm_normalized(301, 301, 0.5), gsl_sf_legendre_sphPlm(301, 301, 0.5));
+  EXPECT_FLOAT_EQ(LegendrePoly::get_spharm_normalized(301, 301, 1), gsl_sf_legendre_sphPlm(301, 301, 1));
+}
+
+TEST(SpharmNormalizedAssociatedLegendre, HighOrderNonSectorial) // l!=m 
+{
+  EXPECT_FLOAT_EQ(LegendrePoly::get_spharm_normalized(100, 0, 0), gsl_sf_legendre_sphPlm(100, 0, 0));
+  EXPECT_FLOAT_EQ(LegendrePoly::get_spharm_normalized(100, 0, 0.5), gsl_sf_legendre_sphPlm(100, 0, 0.5));
+  EXPECT_FLOAT_EQ(LegendrePoly::get_spharm_normalized(100, 0, 1), gsl_sf_legendre_sphPlm(100, 0, 1));
+  EXPECT_FLOAT_EQ(LegendrePoly::get_spharm_normalized(200, 100, 0), gsl_sf_legendre_sphPlm(200, 100, 0));
+  EXPECT_FLOAT_EQ(LegendrePoly::get_spharm_normalized(200, 100, 0.5), gsl_sf_legendre_sphPlm(200, 100, 0.5));
+  EXPECT_FLOAT_EQ(LegendrePoly::get_spharm_normalized(200, 100, 1), gsl_sf_legendre_sphPlm(200, 100, 1));
+  EXPECT_FLOAT_EQ(LegendrePoly::get_spharm_normalized(200, 0, 0), gsl_sf_legendre_sphPlm(200, 0, 0));
+  EXPECT_FLOAT_EQ(LegendrePoly::get_spharm_normalized(200, 0, 0.5), gsl_sf_legendre_sphPlm(200, 0, 0.5));
+  EXPECT_FLOAT_EQ(LegendrePoly::get_spharm_normalized(200, 0, 0.8), gsl_sf_legendre_sphPlm(200, 0, 0.8));
+  EXPECT_FLOAT_EQ(LegendrePoly::get_spharm_normalized(200, 0, 1), gsl_sf_legendre_sphPlm(200, 0, 1));
+  EXPECT_FLOAT_EQ(LegendrePoly::get_spharm_normalized(300, 200, 0), gsl_sf_legendre_sphPlm(300, 200, 0));
+  EXPECT_FLOAT_EQ(LegendrePoly::get_spharm_normalized(300, 200, 0.5), gsl_sf_legendre_sphPlm(300, 200, 0.5));
+  EXPECT_FLOAT_EQ(LegendrePoly::get_spharm_normalized(300, 200, 0.8), gsl_sf_legendre_sphPlm(300, 200, 0.8));
+  EXPECT_FLOAT_EQ(LegendrePoly::get_spharm_normalized(300, 200, 1), gsl_sf_legendre_sphPlm(300, 200, 1));
+  EXPECT_FLOAT_EQ(LegendrePoly::get_spharm_normalized(300, 100, 0), gsl_sf_legendre_sphPlm(300, 100, 0));
+  EXPECT_FLOAT_EQ(LegendrePoly::get_spharm_normalized(300, 100, 0.5), gsl_sf_legendre_sphPlm(300, 100, 0.5));
+  EXPECT_FLOAT_EQ(LegendrePoly::get_spharm_normalized(300, 100, 0.8), gsl_sf_legendre_sphPlm(300, 100, 0.8));
+  EXPECT_FLOAT_EQ(LegendrePoly::get_spharm_normalized(300, 100, 1), gsl_sf_legendre_sphPlm(300, 100, 1));
+}
+  
 }

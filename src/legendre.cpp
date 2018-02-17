@@ -130,6 +130,13 @@ real_t LegendrePoly::get_fully_normalized(const natural_t l,
   }
 }
 
+real_t LegendrePoly::get_spharm_normalized(const natural_t l, 
+                                          const integer_t m, 
+                                          const real_t x)
+{
+  return get_fully_normalized(l, m, x) / sqrt_4_pi;
+}
+
 
 void LegendrePoly::check_parameters(const natural_t l, 
                                       const integer_t m, 
