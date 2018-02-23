@@ -1,0 +1,21 @@
+language: cpp
+sudo: required
+dist: trusty
+compiler: g++
+os: linux
+addons:
+  apt:
+    sources:
+      - ubuntu-toolchain-r-test
+    packages:
+      - g++-5
+
+before_install:
+- ./ci/dependencies.sh
+script:
+- ./ci/build.sh
+- ./ci/run_tests.sh
+after_success:
+- ./ci/coverage.sh
+# Uploading report to CodeCov
+- bash <(curl -s https://codecov.io/bash) || echo "Codecov did not collect coverage reports"

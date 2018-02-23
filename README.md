@@ -5,6 +5,7 @@ Hyperspharm library
 [Spharm Equations](https://arxiv.org/pdf/1202.6522.pdf)
 
 ## Satus
+[![Build Status](https://travis-ci.org/sylvaus/hyperspharm.svg?branch=master)](https://travis-ci.org/sylvaus/hyperspharm)
 
 Done:
   - Implemented small FFT library
@@ -29,7 +30,7 @@ TODO:
     ```
     sudo apt-get install libgtest-dev
     cd /usr/src/gtest
-    sudo cmake
+    sudo cmake .
     sudo make
     sudo cp *.a /usr/lib
     ```
