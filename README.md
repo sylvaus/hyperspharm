@@ -6,6 +6,9 @@ Hyperspharm library
 
 ## Satus
 [![Build Status](https://travis-ci.org/sylvaus/hyperspharm.svg?branch=master)](https://travis-ci.org/sylvaus/hyperspharm)
+[![codecov](https://codecov.io/gh/sylvaus/hyperspharm/branch/master/graph/badge.svg)](https://codecov.io/gh/sylvaus/hyperspharm)
+
+
 
 Done:
   - Implemented small FFT library
