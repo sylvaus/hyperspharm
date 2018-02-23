@@ -3,5 +3,5 @@
 cd $TRAVIS_BUILD_DIR
 mkdir build
 cd build
-cmake ..
-make
+cmake .. -DTESTS:=1 -DCOVERAGE:=1
+make && make tests
