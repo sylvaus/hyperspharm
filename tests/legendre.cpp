@@ -77,7 +77,7 @@ TEST(AssociatedLegendre, HighOrder)
   EXPECT_FLOAT_EQ(LegendrePoly::get_associated(120, 40, 0.3), gsl_sf_legendre_Plm(120, 40, 0.3));
   EXPECT_FLOAT_EQ(LegendrePoly::get_associated(120, 49, -0.7), gsl_sf_legendre_Plm(120, 49, -0.7));
   EXPECT_FLOAT_EQ(LegendrePoly::get_associated(120, 49, 0.2), gsl_sf_legendre_Plm(120, 49, 0.2));
-  EXPECT_FLOAT_EQ(LegendrePoly::get_associated(90, 80, -0.8), gsl_sf_legendre_Plm(90, 80, -0.5));
+  EXPECT_FLOAT_EQ(LegendrePoly::get_associated(90, 80, -0.8), gsl_sf_legendre_Plm(90, 80, -0.8));
   EXPECT_FLOAT_EQ(LegendrePoly::get_associated(90, 80, 0.5), gsl_sf_legendre_Plm(90, 80, 0.5));
   EXPECT_FLOAT_EQ(LegendrePoly::get_associated(90, 89, -0.5), gsl_sf_legendre_Plm(90, 89, -0.5));
   EXPECT_FLOAT_EQ(LegendrePoly::get_associated(90, 89, 0.5), gsl_sf_legendre_Plm(90, 89, 0.5));
