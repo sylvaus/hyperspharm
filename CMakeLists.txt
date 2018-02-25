@@ -16,9 +16,9 @@ endif()
 # Add the header folder
 include_directories(include)
 
-add_library(libfft SHARED src/fft.cpp)
-add_library(libutils SHARED src/utils.cpp)
-add_library(liblegendre SHARED src/legendre.cpp)
+add_library(libfft SHARED src/fft.cpp include/fft.h include/types.h)
+add_library(libutils SHARED src/utils.cpp include/utils.h include/types.h)
+add_library(liblegendre SHARED src/legendre.cpp include/legendre.h)
 target_link_libraries(liblegendre libutils)
 
 add_executable(main src/main.cpp)

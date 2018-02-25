@@ -34,7 +34,7 @@ std::vector<natural_t> PrimeFactors::primes_ = {2, 3, 5, 7};
 
 std::vector<natural_t> PrimeFactors::compute(natural_t n)
 {
-  const natural_t sqrt_n = std::floor(std::sqrt(n));
+  const auto sqrt_n = static_cast<natural_t>(std::floor(std::sqrt(n)));
   
   bool max_memo_reached = false;
   if ((max_prime_checked_ < sqrt_n))
@@ -72,7 +72,7 @@ bool PrimeFactors::is_prime(const natural_t n)
 {
   if (n < 2) {return false;}
   if (2 == n) {return true;}
-  natural_t sqrt_n = std::floor(std::sqrt(n));
+  auto sqrt_n = static_cast<natural_t>(std::floor(std::sqrt(n)));
   for (natural_t divisor = 3; divisor < sqrt_n; divisor += 2)
   {
     if(sqrt_n < divisor)
@@ -91,7 +91,7 @@ bool PrimeFactors::is_prime_memo(const natural_t n)
 {
   // This function assumes that all the primes number smaller or equal to
   // sqrt(n) are known
-  natural_t sqrt_n = std::floor(std::sqrt(n));
+  auto sqrt_n = static_cast<natural_t>(std::floor(std::sqrt(n)));
   for (auto divisor : primes_)
   {
     if(sqrt_n < divisor)
@@ -126,7 +126,6 @@ bool PrimeFactors::compute_primes(const natural_t n)
       if (primes_.size() >= MAX_MEMOISATION_N)
       {
         return true;
-        break;
       }
     }
   }
@@ -141,7 +140,7 @@ inline void PrimeFactors::check_divisor(natural_t &n,
   auto div = std::ldiv(n, divisor);
   while (div.rem == 0)
   {
-    n = div.quot;
+    n = static_cast<natural_t>(div.quot);
     divisors.push_back(divisor);
     div = std::ldiv(n, divisor);
   }

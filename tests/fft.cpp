@@ -7,7 +7,7 @@ namespace hyperspharm
 bool are_complex_equal(const std::complex<real_t>& left, const std::complex<real_t>& right)
 {
   static const real_t threshold = 0.0001;
-  return ((fabs(left.real()- right.real()) < threshold) && (fabs(left.imag()- right.imag()) < threshold));
+  return ((std::abs(left.real()- right.real()) < threshold) && (std::abs(left.imag()- right.imag()) < threshold));
 }
 
 TEST(FFT, FFTSizeNotPowerOfTwo) 

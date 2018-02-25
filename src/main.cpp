@@ -40,10 +40,19 @@ int main()
     auto start = std::chrono::high_resolution_clock::now();
     /*for (long index = 0; index < cycle; index++)
         test ();*/
-    auto results = hyperspharm::PrimeFactors::compute(45457);
-    for (auto value : results)
-      std::cout << value << std::endl;
+    auto results = hyperspharm::PrimeFactors::compute(1545548575124);
+    for (auto result : results)
+      std::cout << result  << "\n";
     auto finish = std::chrono::high_resolution_clock::now();
     std::chrono::duration<hyperspharm::real_t> elapsed = finish - start;
+    std::cout << "Code ran for " << elapsed.count() << "ms\n";
+    start = std::chrono::high_resolution_clock::now();
+    /*for (long index = 0; index < cycle; index++)
+        test ();*/
+    results = hyperspharm::PrimeFactors::compute(1545548575124);
+    for (auto result : results)
+      std::cout << result  << "\n";
+    finish = std::chrono::high_resolution_clock::now();
+    elapsed = finish - start;
     std::cout << "Code ran for " << elapsed.count() << "ms\n";
 }

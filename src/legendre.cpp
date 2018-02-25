@@ -36,7 +36,7 @@ real_t LegendrePoly::get_associated(const natural_t l,
     else {return minus_one_power(l);}
   }
  
-  const real_t sqrt_1_x2 = sqrt(1.0 - x*x);
+  const real_t sqrt_1_x2 = sqrt(1.0d - x*x);
   const real_t half_sqrt_1_x2 = sqrt_1_x2 * 0.5;
   const real_t inv_half_sqrt_1_x2 = x / half_sqrt_1_x2;
   
@@ -54,6 +54,8 @@ real_t LegendrePoly::get_associated(const natural_t l,
         return x;
       case 1:
         return sqrt_1_x2;
+      default:
+      {/*Do nothing*/}
     }
   }
   
@@ -79,7 +81,7 @@ real_t LegendrePoly::get_fully_normalized(const natural_t l,
 #ifndef NOCHECK
   check_parameters(l, m, x);
 #endif
-  const natural_t abs_m = std::abs(m);
+  const auto abs_m = static_cast<natural_t >(std::abs(m));
   
   // Compute N_m^m
   real_t n_m_m = 1;
@@ -102,7 +104,7 @@ real_t LegendrePoly::get_fully_normalized(const natural_t l,
   }
   
   // Compute N_{m + 1}^m
-  const real_t abs_m_real = static_cast<real_t>(abs_m);
+  const auto abs_m_real = static_cast<real_t>(abs_m);
   
   real_t n_m_1_m = x * sqrt((2.0 * abs_m_real) + 3.0) * n_m_m;
   for (natural_t i = (abs_m + 2); i <= l; i++)
@@ -142,7 +144,7 @@ void LegendrePoly::check_parameters(const natural_t l,
                                       const integer_t m, 
                                       const real_t x)
 {
-  const natural_t abs_m = std::abs(m);
+  const auto abs_m = static_cast<natural_t>(std::abs(m));
   if (abs_m > l)
   {
     throw std::invalid_argument( "Associated Legendre Polynomial: abs(m) must be smaller or equal to l" );
