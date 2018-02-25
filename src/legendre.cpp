@@ -49,11 +49,11 @@ real_t LegendrePoly::get_associated(const natural_t l,
     switch (m)
     {
       case -1:
-        return -0.5 * sqrt_1_x2;
+        return 0.5 * sqrt_1_x2;
       case 0:
         return x;
       case 1:
-        return sqrt_1_x2;
+        return -sqrt_1_x2;
       default:
       {/*Do nothing*/}
     }

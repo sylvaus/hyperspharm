@@ -82,4 +82,28 @@ TEST(PrimeFactors, BigPrime)
   }
 }
 
+TEST(PrimeFactors, OutMemoNonPrime)
+{
+  natural_t number = 32416187568;
+  std::vector<natural_t> expected_result = {2, 2, 2, 2, 3, 107, 6311563};
+  auto result = PrimeFactors::compute(number);
+  EXPECT_EQ(result.size(), expected_result.size());
+  for (unsigned int index = 0; index < expected_result.size(); index++)
+  {
+    EXPECT_EQ(result[index], expected_result[index]);
+  }
+}
+
+TEST(PrimeFactors, OutMemoPrime)
+{
+  natural_t number = 32416187567;
+  std::vector<natural_t> expected_result = {32416187567};
+  auto result = PrimeFactors::compute(number);
+  EXPECT_EQ(result.size(), expected_result.size());
+  for (unsigned int index = 0; index < expected_result.size(); index++)
+  {
+    EXPECT_EQ(result[index], expected_result[index]);
+  }
+}
+
 }

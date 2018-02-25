@@ -28,6 +28,7 @@ TEST(Legendre, InitialValues)
   EXPECT_EQ(LegendrePoly::get(0, 0), 1);
   EXPECT_EQ(LegendrePoly::get(1, 0), 0);
   EXPECT_EQ(LegendrePoly::get(1, 1), 1);
+  EXPECT_EQ(LegendrePoly::get(1, -1), -1);
 }
 
 TEST(Legendre, HigherOrder) 
@@ -53,9 +54,21 @@ TEST(AssociatedLegendre, NotationCheck)
   EXPECT_FLOAT_EQ(P_2_1(0.5), LegendrePoly::get_associated(2, 1, 0.5));  
 }
 
+TEST(AssociatedLegendre, InvalidArguments)
+{
+  ASSERT_THROW(LegendrePoly::get_associated(5, -6, 0.0), std::invalid_argument);
+  ASSERT_THROW(LegendrePoly::get_associated(5, 6, 0.0), std::invalid_argument);
+  ASSERT_THROW(LegendrePoly::get_associated(5, 4, -1.5), std::invalid_argument);
+  ASSERT_THROW(LegendrePoly::get_associated(5, 4, -1.5), std::invalid_argument);
+}
+
 TEST(AssociatedLegendre, LowOrder) 
 {
-  EXPECT_FLOAT_EQ(LegendrePoly::get_associated(2, 1, -1), gsl_sf_legendre_Plm(2, 1, -1));
+  EXPECT_FLOAT_EQ(LegendrePoly::get_associated(1, 1, -1), gsl_sf_legendre_Plm(1, 1, -1));
+  EXPECT_FLOAT_EQ(LegendrePoly::get_associated(1, 1, -0.5), gsl_sf_legendre_Plm(1, 1, -0.5));
+  EXPECT_FLOAT_EQ(LegendrePoly::get_associated(1, 1, 0.0), gsl_sf_legendre_Plm(1, 1, 0.0));
+  EXPECT_FLOAT_EQ(LegendrePoly::get_associated(1, 1, 0.5), gsl_sf_legendre_Plm(1, 1, 0.5));
+  EXPECT_FLOAT_EQ(LegendrePoly::get_associated(2, 1, 1), gsl_sf_legendre_Plm(2, 1, 1));
   EXPECT_FLOAT_EQ(LegendrePoly::get_associated(2, 1, -0.5), gsl_sf_legendre_Plm(2, 1, -0.5));
   EXPECT_FLOAT_EQ(LegendrePoly::get_associated(2, 1, 0), gsl_sf_legendre_Plm(2, 1, 0));
   EXPECT_FLOAT_EQ(LegendrePoly::get_associated(2, 1, 0.5), gsl_sf_legendre_Plm(2, 1, 0.5));
@@ -81,6 +94,14 @@ TEST(AssociatedLegendre, HighOrder)
   EXPECT_FLOAT_EQ(LegendrePoly::get_associated(90, 80, 0.5), gsl_sf_legendre_Plm(90, 80, 0.5));
   EXPECT_FLOAT_EQ(LegendrePoly::get_associated(90, 89, -0.5), gsl_sf_legendre_Plm(90, 89, -0.5));
   EXPECT_FLOAT_EQ(LegendrePoly::get_associated(90, 89, 0.5), gsl_sf_legendre_Plm(90, 89, 0.5));
+}
+
+TEST(FullyNormalizedAssociatedLegendre, InvalidArguments)
+{
+  ASSERT_THROW(LegendrePoly::get_fully_normalized(5, -6, 0.0), std::invalid_argument);
+  ASSERT_THROW(LegendrePoly::get_fully_normalized(5, 6, 0.0), std::invalid_argument);
+  ASSERT_THROW(LegendrePoly::get_fully_normalized(5, 4, -1.5), std::invalid_argument);
+  ASSERT_THROW(LegendrePoly::get_fully_normalized(5, 4, -1.5), std::invalid_argument);
 }
 
 TEST(FullyNormalizedAssociatedLegendre, LowOrderSectorial) // l==m 
@@ -164,9 +185,16 @@ TEST(FullyNormalizedAssociatedLegendre, HighOrderNonSectorial) // l!=m
   EXPECT_FLOAT_EQ(LegendrePoly::get_fully_normalized(300, 100, 1) / sqrt_4_pi, gsl_sf_legendre_sphPlm(300, 100, 1));
 }
 
+TEST(SpharmNormalizedAssociatedLegendre, InvalidArguments)
+{
+  ASSERT_THROW(LegendrePoly::get_spharm_normalized(5, -6, 0.0), std::invalid_argument);
+  ASSERT_THROW(LegendrePoly::get_spharm_normalized(5, 6, 0.0), std::invalid_argument);
+  ASSERT_THROW(LegendrePoly::get_spharm_normalized(5, 4, -1.5), std::invalid_argument);
+  ASSERT_THROW(LegendrePoly::get_spharm_normalized(5, 4, -1.5), std::invalid_argument);
+}
+
 TEST(SpharmNormalizedAssociatedLegendre, LowOrderSectorial) // l==m 
 {
-  
   EXPECT_FLOAT_EQ(LegendrePoly::get_spharm_normalized(1, 1, 0), gsl_sf_legendre_sphPlm(1, 1, 0));
   EXPECT_FLOAT_EQ(LegendrePoly::get_spharm_normalized(1, 1, 0.5), gsl_sf_legendre_sphPlm(1, 1, 0.5));
   EXPECT_FLOAT_EQ(LegendrePoly::get_spharm_normalized(1, 1, 1), gsl_sf_legendre_sphPlm(1, 1, 1));
