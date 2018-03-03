@@ -24,12 +24,16 @@ target_link_libraries(liblegendre libutils)
 add_executable(main src/main.cpp)
 target_link_libraries(main libfft libutils)
 
+
 if (TESTS)
   enable_testing()
   find_package(GTest REQUIRED)
   find_package(Threads REQUIRED)
   find_package(GSL REQUIRED) 
   include_directories(${GTEST_INCLUDE_DIRS})
+
+  add_executable(benchmark src/benchmark.cpp)
+  target_link_libraries(benchmark liblegendre ${GSL_LIBRARY} ${GSL_CBLAS_LIBRARY})
   
   file(GLOB TESTS_SRC ${PROJECT_SOURCE_DIR}/tests/*.cpp)
   add_executable(tests ${TESTS_SRC})
