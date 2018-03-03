@@ -33,11 +33,12 @@ std::vector<legendre_test_value> generate_legendre_test_values(const unsigned lo
 
   for(unsigned long i = 0;  i < nb_values; i++)
   {
-    legendre_test_value value;
-    value.l = static_cast<hyperspharm::natural_t>(l_dis(gen));
-    value.m = static_cast<hyperspharm::natural_t>(l_dis(gen));
+    legendre_test_value value = {
+        static_cast<hyperspharm::natural_t>(l_dis(gen))
+        , static_cast<hyperspharm::natural_t>(l_dis(gen))
+        , x_dis(gen)
+    };
     value.m = (value.l == 0) ? 0 : (value.m % value.l);
-    value.x = x_dis(gen);
     test_values.push_back(value);
   }
 
@@ -46,8 +47,8 @@ std::vector<legendre_test_value> generate_legendre_test_values(const unsigned lo
 
 void test_spharm_normalized_legendre()
 {
-  const unsigned int nb_tests = 10000;
-  const hyperspharm::natural_t max_l = 10000;
+  const unsigned int nb_tests = 1000000;
+  const hyperspharm::natural_t max_l = 900;
   std::vector<legendre_test_value> values = generate_legendre_test_values(nb_tests, max_l);
   std::vector<hyperspharm::real_t> results_this, results_gnu;
   results_this.reserve(nb_tests);

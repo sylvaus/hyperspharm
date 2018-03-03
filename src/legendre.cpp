@@ -113,14 +113,14 @@ real_t LegendrePoly::get_fully_normalized(const natural_t l,
   // Compute N_{m + 1}^m
   const auto abs_m_real = static_cast<real_t>(abs_m);
   
-  real_t n_m_1_m = x * sqrt((2.0 * abs_m_real) + 3.0) * n_m_m;
+  real_t n_m_1_m = x * std::sqrt((2.0 * abs_m_real) + 3.0) * n_m_m;
   for (natural_t i = (abs_m + 2); i <= l; i++)
   {
-    const real_t coeff_n_m_1_m = sqrt(static_cast<real_t>((4 * i * i) - 1) / // (2*i - 1) * (2*i + 1) = (2*i)²  - 1 = (4 * i²) -1
-                                      static_cast<real_t>((i - abs_m) * (i + abs_m))
+    const real_t coeff_n_m_1_m = std::sqrt(static_cast<real_t>((4 * i * i) - 1) / // (2*i - 1) * (2*i + 1) = (2*i)²  - 1 = (4 * i²) -1
+                                           static_cast<real_t>((i - abs_m) * (i + abs_m))
     );
-    const real_t coeff_n_m_m = sqrt(static_cast<real_t>(((2 * i) + 1) * (i - abs_m - 1) * (i + abs_m - 1))/
-                                    static_cast<real_t>((i - abs_m) * (i + abs_m) * ((2 * i) - 3))
+    const real_t coeff_n_m_m = std::sqrt(static_cast<real_t>(((2 * i) + 1) * (i - abs_m - 1) * (i + abs_m - 1))/
+                                         static_cast<real_t>((i - abs_m) * (i + abs_m) * ((2 * i) - 3))
     );
     const real_t tmp = n_m_1_m;
     n_m_1_m = (coeff_n_m_1_m * x * n_m_1_m) - 
