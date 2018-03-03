@@ -59,7 +59,7 @@ real_t LegendrePoly::get_associated(const natural_t l,
     }
   }
   
-  real_t p_l__m = minus_one_power(l) * pow(half_sqrt_1_x2, l) / Factorial::get(l); // P_l^{-l}
+  real_t p_l__m = minus_one_power(l) * std::pow(half_sqrt_1_x2, l) / Factorial::get(l); // P_l^{-l}
   if (m == -static_cast<integer_t>(l)) {return p_l__m;}
   real_t p_l_1_m = -p_l__m * static_cast<real_t>(l) * inv_half_sqrt_1_x2; // P_l^{1-l}
 
@@ -93,13 +93,14 @@ real_t LegendrePoly::get_fully_normalized(const natural_t l,
   real_t n_m_m = 1;
   if (m != 0)
   {
-    const real_t poly = -sqrt(1.0 - (x * x));
+    const real_t poly = (1.0 - (x * x));
     for (natural_t i = 1; i <= abs_m; i++)
     {
       n_m_m *= (poly * 
-                sqrt((2.0 * static_cast<real_t>(i) + 1.0) / 
-                     (2.0 * static_cast<real_t>(i))));
+                (2.0 * static_cast<real_t>(i) + 1.0) /
+                 (2.0 * static_cast<real_t>(i)));
     }
+    n_m_m = minus_one_power(abs_m) * std::sqrt(n_m_m);
   }
   
   if (l == abs_m) {return n_m_m;}
