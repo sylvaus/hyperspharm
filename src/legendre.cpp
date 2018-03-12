@@ -14,13 +14,15 @@
 namespace hyperspharm
 {
 
-const real_t LegendrePoly::sqrt_4_pi = sqrt(4.0 * M_PI);
+
+const real_t LegendrePoly::SQRT_4_PI = sqrt(4.0 * M_PI);
+const real_t LegendrePoly::SPHARM_NORM = 1.0 / SQRT_4_PI;
+const real_t LegendrePoly::FULLY_NORM = 1.0;
 
 real_t LegendrePoly::get(const natural_t l, const real_t x)
 {
   return get_associated(l, 0, x);
 }
-
 
 real_t LegendrePoly::get_associated(const natural_t l, 
                                     const integer_t m, 
@@ -143,8 +145,9 @@ real_t LegendrePoly::get_spharm_normalized(const natural_t l,
                                           const integer_t m, 
                                           const real_t x)
 {
-  return get_fully_normalized(l, m, x) / sqrt_4_pi;
+  return get_fully_normalized(l, m, x) / SQRT_4_PI;
 }
+
 
 
 void LegendrePoly::check_parameters(const natural_t l, 
@@ -161,6 +164,103 @@ void LegendrePoly::check_parameters(const natural_t l,
   {
     throw std::invalid_argument( "Associated Legendre Polynomial: function domain is x in [-1, 1] " );
   }
+}
+
+NormalizedLegendreArray LegendrePoly::get_norm_array(const real_t normalization_coeff,
+                                                     const natural_t l_max,
+                                                     const real_t x)
+{
+  NormalizedLegendreArray result(l_max);
+
+  // Compute N_m^m
+  result.set(0, 0, 1);
+  if (l_max != 0)
+  {
+    const real_t poly = (1.0 - (x * x));
+    for (natural_t i = 1; i <= l_max; i++)
+    {
+      result.set(i, i,
+                 (-poly * result.get(i - 1, i - 1) *
+                  (2.0 * static_cast<real_t>(i) + 1.0) /
+                  (2.0 * static_cast<real_t>(i))));
+    }
+  }
+
+
+  // Compute N_{m + 1}^m
+  for (natural_t j = 0; j <= l_max; j++)
+  {
+    const auto abs_m_real = static_cast<real_t>(j);
+
+    result.set(j+1, j,  x * std::sqrt((2.0 * abs_m_real) + 3.0) * result.get(j, j));
+    for (natural_t i = (j + 2); i <= l_max; i++) {
+      const real_t coeff_n_m_1_m = std::sqrt(
+          static_cast<real_t>((4 * i * i) - 1) / // (2*i - 1) * (2*i + 1) = (2*i)²  - 1 = (4 * i²) -1
+          static_cast<real_t>((i - j) * (i + j))
+      );
+      const real_t coeff_n_m_m = std::sqrt(static_cast<real_t>(((2 * i) + 1) * (i - j - 1) * (i + j - 1)) /
+                                           static_cast<real_t>((i - j) * (i + j) * ((2 * i) - 3))
+      );
+      result.set(i, j, (coeff_n_m_1_m * x * result.get(i-1, j)) -
+                       (coeff_n_m_m * result.get(i-2, j)));
+    }
+  }
+
+  for (auto value : result.values)
+  {
+    value *= normalization_coeff;
+  }
+
+  return result;
+}
+
+NormalizedLegendreArray LegendrePoly::get_fully_norm_array(const natural_t l_max, const real_t x)
+{
+  return get_norm_array(FULLY_NORM, l_max, x);
+}
+
+NormalizedLegendreArray LegendrePoly::get_sph_norm_array(const natural_t l_max, const real_t x)
+{
+  return get_norm_array(SPHARM_NORM, l_max, x);
+}
+
+NormalizedLegendreArray::NormalizedLegendreArray(const natural_t l_max) :
+  l_max(l_max), values(((l_max + 2)*(l_max + 1))/2)
+{}
+
+real_t NormalizedLegendreArray::get(const natural_t l, const integer_t m)
+{
+  const auto abs_m = static_cast<natural_t >(std::abs(m));
+  const size_t index = ((l+1) * l)/2 + abs_m;
+  if(index >= values.size())
+  {
+    return 0;
+  }
+
+  return ((m >= 0) || is_even(abs_m)) ? values[index] : -values[index];
+}
+
+void NormalizedLegendreArray::set(const natural_t l, const integer_t m, const real_t x)
+{
+  const auto abs_m = static_cast<natural_t >(std::abs(m));
+  const size_t index = ((l+1) * l)/2 + abs_m;
+  if(index >= values.size())
+  {
+    return;
+  }
+  if (m >= 0)
+  {
+    values[index] =  x;
+  }
+  else
+  {
+    values[index] =  is_even(m) ? x : -x;
+  }
+}
+
+size_t NormalizedLegendreArray::get_index(const natural_t l, const integer_t m)
+{
+  return ((l+1) * l)/2 + static_cast<natural_t >(std::abs(m));
 }
 
 }
