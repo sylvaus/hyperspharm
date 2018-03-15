@@ -17,7 +17,7 @@ namespace hyperspharm
 
 const real_t LegendrePoly::SQRT_4_PI = sqrt(4.0 * M_PI);
 const real_t LegendrePoly::SPHARM_NORM = 1.0 / SQRT_4_PI;
-const real_t LegendrePoly::FULLY_NORM = 1.0;
+const real_t LegendrePoly::FULLY_NORM = 1.0 / std::sqrt(2.0);
 
 real_t LegendrePoly::get(const natural_t l, const real_t x)
 {
@@ -173,16 +173,19 @@ NormalizedLegendreArray LegendrePoly::get_norm_array(const real_t normalization_
   NormalizedLegendreArray result(l_max);
 
   // Compute N_m^m
-  result.set(0, 0, 1);
+  result.set(0, 0, 1.0);
   if (l_max != 0)
   {
     const real_t poly = (1.0 - (x * x));
     for (natural_t i = 1; i <= l_max; i++)
     {
       result.set(i, i,
-                 (-poly * result.get(i - 1, i - 1) *
-                  (2.0 * static_cast<real_t>(i) + 1.0) /
-                  (2.0 * static_cast<real_t>(i))));
+                 -result.get(i - 1, i - 1) *
+                 std::sqrt(poly *
+                           (2.0 * static_cast<real_t>(i) + 1.0) /
+                           (2.0 * static_cast<real_t>(i))
+                 )
+      );
     }
   }
 
@@ -206,7 +209,7 @@ NormalizedLegendreArray LegendrePoly::get_norm_array(const real_t normalization_
     }
   }
 
-  for (auto value : result.values)
+  for (auto& value : result.values)
   {
     value *= normalization_coeff;
   }
