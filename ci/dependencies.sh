@@ -9,4 +9,9 @@ sudo cp ./*.a /usr/lib
 
 # For hypershparm librarygcov main_test.cpp
 cd $TRAVIS_BUILD_DIR
-sudo apt-get install -y libgsl* gsl-*
+wget ftp://ftp.gnu.org/gnu/gsl/gsl-2.1.tar.gz
+tar -xvf gsl-2.1.tar.gz
+cd gsl-2.1/
+./configure
+make
+sudo make install
