@@ -191,12 +191,14 @@ NormalizedLegendreArray LegendrePoly::get_norm_array(const real_t normalization_
 
 
   // Compute N_{m + 1}^m
+  #pragma omp parallel for schedule(dynamic)
   for (natural_t j = 0; j <= l_max; j++)
   {
     const auto abs_m_real = static_cast<real_t>(j);
 
     result.set(j+1, j,  x * std::sqrt((2.0 * abs_m_real) + 3.0) * result.get(j, j));
-    for (natural_t i = (j + 2); i <= l_max; i++) {
+    for (natural_t i = (j + 2); i <= l_max; i++)
+    {
       const real_t coeff_n_m_1_m = std::sqrt(
           static_cast<real_t>((4 * i * i) - 1) / // (2*i - 1) * (2*i + 1) = (2*i)²  - 1 = (4 * i²) -1
           static_cast<real_t>((i - j) * (i + j))
