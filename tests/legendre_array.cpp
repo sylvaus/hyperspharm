@@ -9,7 +9,6 @@ using hyperspharm::NormalizedLegendreArray;
 
 namespace hyperspharm_legendrepolyarray_test
 {
-const hyperspharm::real_t sqrt_4_pi = sqrt(4.0 * M_PI);
 
 
 TEST(FullyNormalizedAssociatedLegendreArray, PositiveX) // l==m
