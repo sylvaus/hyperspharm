@@ -199,15 +199,15 @@ NormalizedLegendreArray LegendrePoly::get_norm_array(const real_t normalization_
     result.set(j+1, j,  x * std::sqrt((2.0 * abs_m_real) + 3.0) * result.get(j, j));
     for (natural_t i = (j + 2); i <= l_max; i++)
     {
-      const real_t coeff_n_m_1_m = std::sqrt(
+      const real_t coeff_i_1_j = std::sqrt(
           static_cast<real_t>((4 * i * i) - 1) / // (2*i - 1) * (2*i + 1) = (2*i)²  - 1 = (4 * i²) -1
           static_cast<real_t>((i - j) * (i + j))
       );
-      const real_t coeff_n_m_m = std::sqrt(static_cast<real_t>(((2 * i) + 1) * (i - j - 1) * (i + j - 1)) /
+      const real_t coeff_i_2_j = std::sqrt(static_cast<real_t>(((2 * i) + 1) * (i - j - 1) * (i + j - 1)) /
                                            static_cast<real_t>((i - j) * (i + j) * ((2 * i) - 3))
       );
-      result.set(i, j, (coeff_n_m_1_m * x * result.get(i-1, j)) -
-                       (coeff_n_m_m * result.get(i-2, j)));
+      result.set(i, j, (coeff_i_1_j * x * result.get(i-1, j)) -
+                       (coeff_i_2_j * result.get(i-2, j)));
     }
   }
 
