@@ -29,8 +29,19 @@ real_t LegendrePoly::get_associated(const natural_t l,
                                     const real_t x)
 {  
 #ifndef NOCHECK
-  check_parameters(l, m, x);
+  if (static_cast<natural_t>(std::abs(m)) > l)
+  {
+    throw std::invalid_argument( "Associated Legendre Polynomial: abs(m) must be smaller or equal to l" );
+  }
+
+  if (std::abs(x) > 1.0)
+  {
+    throw std::invalid_argument( "Associated Legendre Polynomial: function domain is x in [-1, 1] " );
+  }
+#else
+  const auto abs_m = static_cast<natural_t >(std::abs(m));
 #endif
+
   if (almost_equal(std::abs(x), static_cast<real_t>(1.0), static_cast<real_t>(0.000001))) 
   {
     if (m != 0) {return 0;}
@@ -87,10 +98,20 @@ real_t LegendrePoly::get_fully_normalized(const natural_t l,
                                           const real_t x)
 {
 #ifndef NOCHECK
-  check_parameters(l, m, x);
-#endif
+  const auto abs_m = static_cast<natural_t>(std::abs(m));
+  if (abs_m > l)
+  {
+    throw std::invalid_argument( "Normalized Legendre Polynomial: abs(m) must be smaller or equal to l" );
+  }
+
+  if (std::abs(x) > 1.0)
+  {
+    throw std::invalid_argument( "Normalized Legendre Polynomial: function domain is x in [-1, 1] " );
+  }
+#else
   const auto abs_m = static_cast<natural_t >(std::abs(m));
-  
+#endif
+
   // Compute N_m^m
   real_t n_m_m = 1;
   if (m != 0)
@@ -149,23 +170,6 @@ real_t LegendrePoly::get_spharm_normalized(const natural_t l,
 }
 
 
-
-void LegendrePoly::check_parameters(const natural_t l, 
-                                      const integer_t m, 
-                                      const real_t x)
-{
-  const auto abs_m = static_cast<natural_t>(std::abs(m));
-  if (abs_m > l)
-  {
-    throw std::invalid_argument( "Associated Legendre Polynomial: abs(m) must be smaller or equal to l" );
-  }
-
-  if (std::abs(x) > 1.0)
-  {
-    throw std::invalid_argument( "Associated Legendre Polynomial: function domain is x in [-1, 1] " );
-  }
-}
-
 NormalizedLegendreArray LegendrePoly::get_norm_array(const real_t normalization_coeff,
                                                      const natural_t l_max,
                                                      const real_t x)
@@ -194,9 +198,7 @@ NormalizedLegendreArray LegendrePoly::get_norm_array(const real_t normalization_
   #pragma omp parallel for schedule(dynamic)
   for (natural_t j = 0; j <= l_max; j++)
   {
-    const auto abs_m_real = static_cast<real_t>(j);
-
-    result.set(j+1, j,  x * std::sqrt((2.0 * abs_m_real) + 3.0) * result.get(j, j));
+    result.set(j+1, j,  x * std::sqrt((2.0 * static_cast<real_t>(j)) + 3.0) * result.get(j, j));
     for (natural_t i = (j + 2); i <= l_max; i++)
     {
       const real_t coeff_i_1_j = std::sqrt(
@@ -211,7 +213,7 @@ NormalizedLegendreArray LegendrePoly::get_norm_array(const real_t normalization_
     }
   }
 
-  for (auto& value : result.values)
+  for (auto& value : result.values_)
   {
     value *= normalization_coeff;
   }
@@ -230,36 +232,36 @@ NormalizedLegendreArray LegendrePoly::get_sph_norm_array(const natural_t l_max, 
 }
 
 NormalizedLegendreArray::NormalizedLegendreArray(const natural_t l_max) :
-  l_max(l_max), values(((l_max + 2)*(l_max + 1))/2)
+  l_max(l_max), values_(((l_max + 2)*(l_max + 1))/2)
 {}
 
 real_t NormalizedLegendreArray::get(const natural_t l, const integer_t m)
 {
   const auto abs_m = static_cast<natural_t >(std::abs(m));
   const size_t index = ((l+1) * l)/2 + abs_m;
-  if(index >= values.size())
+  if(index >= values_.size())
   {
     return 0;
   }
 
-  return ((m >= 0) || is_even(abs_m)) ? values[index] : -values[index];
+  return ((m >= 0) || is_even(abs_m)) ? values_[index] : -values_[index];
 }
 
 void NormalizedLegendreArray::set(const natural_t l, const integer_t m, const real_t x)
 {
   const auto abs_m = static_cast<natural_t >(std::abs(m));
   const size_t index = ((l+1) * l)/2 + abs_m;
-  if(index >= values.size())
+  if(index >= values_.size())
   {
     return;
   }
   if (m >= 0)
   {
-    values[index] =  x;
+    values_[index] =  x;
   }
   else
   {
-    values[index] =  is_even(m) ? x : -x;
+    values_[index] =  is_even(m) ? x : -x;
   }
 }
 

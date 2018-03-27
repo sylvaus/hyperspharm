@@ -46,12 +46,7 @@ public:
                                                       const real_t x);
   static NormalizedLegendreArray get_sph_norm_array(const natural_t l_max,
                                                     const real_t x);
-  
-private:
 
-  static void check_parameters(const natural_t l, 
-                               const integer_t m, 
-                               const real_t x);
 };
 
 class NormalizedLegendreArray
@@ -68,7 +63,7 @@ public:
 
 private:
   size_t get_index(const natural_t l, const integer_t m);
-  std::vector<real_t> values;
+  std::vector<real_t> values_;
 };
 
 }

@@ -8,8 +8,6 @@ Hyperspharm library
 [![Build Status](https://travis-ci.org/sylvaus/hyperspharm.svg?branch=master)](https://travis-ci.org/sylvaus/hyperspharm)
 [![codecov](https://codecov.io/gh/sylvaus/hyperspharm/branch/master/graph/badge.svg)](https://codecov.io/gh/sylvaus/hyperspharm)
 
-
-
 Done:
   - Implemented small FFT library
   - Implement tests for FFT library
@@ -37,7 +35,8 @@ TODO:
     sudo make
     sudo cp *.a /usr/lib
     ```
-  - gsl library:
+  - gsl library (2.1):
     ```
     sudo apt-get install libgsl2 gsl-*
     ```
+    or source install [source code](ftp://ftp.gnu.org/gnu/gsl/gsl-2.1.tar.gz)
