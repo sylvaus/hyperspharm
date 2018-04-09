@@ -270,13 +270,13 @@ size_t NormalizedLegendreArray::get_index(const natural_t l, const integer_t m)
   return ((l+1) * l)/2 + static_cast<natural_t >(std::abs(m));
 }
 
-NormalizedLegendreArray::NormalizedLegendreArray(NormalizedLegendreArray &&other) :
+NormalizedLegendreArray::NormalizedLegendreArray(NormalizedLegendreArray &&other) noexcept :
   l_max_(other.l_max_)
 {
   values_ = std::move(other.values_);
 }
 
-NormalizedLegendreArray &NormalizedLegendreArray::operator=(NormalizedLegendreArray &&other)
+NormalizedLegendreArray &NormalizedLegendreArray::operator=(NormalizedLegendreArray &&other) noexcept
 {
   if (this != &other)
   {
