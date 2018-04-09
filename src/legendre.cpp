@@ -232,10 +232,10 @@ NormalizedLegendreArray LegendrePoly::get_sph_norm_array(const natural_t l_max, 
 }
 
 NormalizedLegendreArray::NormalizedLegendreArray(const natural_t l_max) :
-  l_max(l_max), values_(((l_max + 2)*(l_max + 1))/2)
+  l_max_(l_max), values_(((l_max + 2)*(l_max + 1))/2)
 {}
 
-real_t NormalizedLegendreArray::get(const natural_t l, const integer_t m)
+real_t NormalizedLegendreArray::get(const natural_t l, const integer_t m) const
 {
   const auto abs_m = static_cast<natural_t >(std::abs(m));
   const size_t index = ((l+1) * l)/2 + abs_m;
@@ -261,7 +261,7 @@ void NormalizedLegendreArray::set(const natural_t l, const integer_t m, const re
   }
   else
   {
-    values_[index] =  is_even(m) ? x : -x;
+    values_[index] =  is_even(abs_m) ? x : -x;
   }
 }
 
@@ -269,6 +269,27 @@ size_t NormalizedLegendreArray::get_index(const natural_t l, const integer_t m)
 {
   return ((l+1) * l)/2 + static_cast<natural_t >(std::abs(m));
 }
+
+NormalizedLegendreArray::NormalizedLegendreArray(NormalizedLegendreArray &&other) :
+  l_max_(other.l_max_)
+{
+  values_ = std::move(other.values_);
+}
+
+NormalizedLegendreArray &NormalizedLegendreArray::operator=(NormalizedLegendreArray &&other)
+{
+  if (this != &other)
+  {
+    l_max_ = other.l_max_;
+    values_ = std::move(other.values_);
+  }
+  return *this;
+}
+
+natural_t NormalizedLegendreArray::l_max() {
+  return l_max_;
+}
+
 
 }
 

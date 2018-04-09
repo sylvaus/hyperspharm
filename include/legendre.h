@@ -54,15 +54,18 @@ class NormalizedLegendreArray
 friend LegendrePoly;
 
 public:
-  const natural_t l_max;
-
   explicit NormalizedLegendreArray(const natural_t l_max);
 
-  real_t get(const natural_t l, const integer_t m);
+  NormalizedLegendreArray (NormalizedLegendreArray&& other) noexcept;
+  NormalizedLegendreArray& operator= (NormalizedLegendreArray&& other) noexcept;
+
+  real_t get(const natural_t l, const integer_t m) const;
   void set(const natural_t l, const integer_t m, const real_t x);
 
+  natural_t l_max();
 private:
-  size_t get_index(const natural_t l, const integer_t m);
+  static size_t get_index(const natural_t l, const integer_t m);
+  natural_t l_max_;
   std::vector<real_t> values_;
 };
 
