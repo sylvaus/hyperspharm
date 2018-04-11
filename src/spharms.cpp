@@ -115,7 +115,7 @@ std::string SphericalHarmonics::to_string()
   for (unsigned int l = 0; l < l_max_ ; ++l)
   {
     sstream << std::setw(3) << l << " : ";
-    for (unsigned int m = 0; m < l_max_; ++m)
+    for (unsigned int m = 0; m <= l; ++m)
     {
       sstream << std::setw(18) << get(l, m) << " ";
     }
@@ -142,21 +142,23 @@ SphericalHarmonics Spharm::spharm_transform(const SphericalSurface &spherical_su
   real_t theta = delta_theta / 2.0;
   for (natural_t theta_index = 0; theta_index < spherical_surface.rows(); ++theta_index)
   {
-    NormalizedLegendreArray pnm_theta = LegendrePoly::get_fully_norm_array(spherical_surface.rows(), std::cos(theta));
+    NormalizedLegendreArray pnm_theta = LegendrePoly::get_sph_norm_array(spherical_surface.rows(), std::cos(theta));
     plm_thetas.push_back(std::move(pnm_theta));
     theta += delta_theta;
   }
 
+  const auto fft_normalization = 2.0 * M_PI / static_cast<real_t>(spherical_surface.rows());
   SphericalHarmonics result(spherical_surface.rows());
   for (natural_t l = 0; l < result.l_max(); ++l)
   {
-    for (natural_t m = 0; m < l; ++m)
+    for (natural_t m = 0; m <= l; ++m)
     {
-      complex_t fm_n;
+      complex_t fm_n = {0, 0};
       theta = delta_theta / 2.0;
       for (natural_t theta_index = 0; theta_index < spherical_surface.rows(); ++theta_index)
       {
-        fm_n += fm_thetas[theta_index][m] * plm_thetas[theta_index].get(l, m) * w * std::sin(theta);
+        fm_n += fm_thetas[theta_index][m] *
+                (plm_thetas[theta_index].get(l, m) * w * std::sin(theta) * fft_normalization);
         theta += delta_theta;
       }
       result.set(l, m, fm_n);
