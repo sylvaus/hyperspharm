@@ -51,15 +51,15 @@ std::string SphericalSurface::to_string()
   sstream << "Theta\\Psi";
   for (unsigned int psi = 0; psi < cols_ ; ++psi)
   {
-    sstream << std::setw(5) << std::right << (psi * 2 + 1) << "/" <<
-               std::setw(3) << std::left << (cols_ * 2) << "pi";
+    sstream << std::setw(5) << std::right << (psi) << "/" <<
+               std::setw(3) << std::left << (cols_) << "pi";
   }
   sstream << std::endl;
 
   for (unsigned int theta = 0; theta < rows_ ; ++theta)
   {
-    sstream << std::setw(3) << std::right << (theta * 2 + 1) << "/" <<
-               std::setw(3) << std::left << (rows_ * 2) << "pi : ";
+    sstream << std::setw(3) << std::right << (theta) << "/" <<
+               std::setw(3) << std::left << (rows_ - 1) << "pi : ";
     for (unsigned int psi = 0; psi < cols_; ++psi)
     {
       sstream << std::setw(10) << get(theta, psi) << " ";
@@ -126,45 +126,87 @@ std::string SphericalHarmonics::to_string()
 
 SphericalHarmonics Spharm::spharm_transform(const SphericalSurface &spherical_surface)
 {
-  std::vector<std::vector<complex_t>> fm_thetas;
-  fm_thetas.reserve(spherical_surface.rows());
-  for (natural_t theta_index = 0; theta_index < spherical_surface.rows(); ++theta_index)
+  auto fm_thetas = compute_fm_thetas(spherical_surface);
+  auto plm_thetas = compute_plm_thetas(spherical_surface);
+  auto cheb_weights = compute_cheb_weights(spherical_surface.rows());
+
+  SphericalHarmonics result(spherical_surface.rows());
+  #pragma omp parallel for schedule(dynamic)
+  for (natural_t l = 0; l < result.l_max(); ++l)
   {
-    std::vector<complex_t> fm_theta = spherical_surface.get_psi_array(theta_index);
-    fft(fm_theta.data(), fm_theta.size());
-    fm_thetas.push_back(std::move(fm_theta));
+    for (natural_t m = 0; m <= l; ++m)
+    {
+      result.set(l, m, compute_flm(spherical_surface, fm_thetas, plm_thetas, cheb_weights, l, m));
+    }
   }
 
+  return result;
+}
+
+inline complex_t
+Spharm::compute_flm(const SphericalSurface &spherical_surface,
+                    const std::vector<std::vector<complex_t>> &fm_thetas,
+                    const std::vector<NormalizedLegendreArray> &plm_thetas,
+                    const std::vector<real_t> &cheb_weights,
+                    const natural_t l, const natural_t m)
+{
+  const real_t delta_theta = M_PI / static_cast<real_t>(spherical_surface.rows());
+  const real_t fft_normalization = 2.0 * M_PI / static_cast<real_t>(spherical_surface.rows());
+
+  real_t theta = 0;
+  complex_t flm = {0, 0};
+  for (natural_t theta_index = 0; theta_index < plm_thetas.size(); ++theta_index)
+  {
+    flm += fm_thetas[theta_index][m] *
+           (plm_thetas[theta_index].get(l, m) * cheb_weights[theta_index] * std::sin(theta));
+    theta += delta_theta;
+  }
+  return flm * fft_normalization * M_PI / static_cast<real_t>(spherical_surface.rows());
+}
+
+std::vector<NormalizedLegendreArray> Spharm::compute_plm_thetas(const SphericalSurface &spherical_surface)
+{
+  const real_t delta_theta = M_PI / static_cast<real_t>(spherical_surface.rows());
   std::vector<NormalizedLegendreArray> plm_thetas;
   plm_thetas.reserve(spherical_surface.rows());
-  const real_t w = M_PI / static_cast<real_t>(spherical_surface.rows());
-  const real_t delta_theta = M_PI / static_cast<real_t>(spherical_surface.rows());
-  real_t theta = delta_theta / 2.0;
+  real_t theta = 0;
   for (natural_t theta_index = 0; theta_index < spherical_surface.rows(); ++theta_index)
   {
     NormalizedLegendreArray pnm_theta = LegendrePoly::get_sph_norm_array(spherical_surface.rows(), std::cos(theta));
     plm_thetas.push_back(std::move(pnm_theta));
     theta += delta_theta;
   }
+  return plm_thetas;
+}
 
-  const auto fft_normalization = 2.0 * M_PI / static_cast<real_t>(spherical_surface.rows());
-  SphericalHarmonics result(spherical_surface.rows());
-  for (natural_t l = 0; l < result.l_max(); ++l)
+std::vector<std::vector<complex_t>> Spharm::compute_fm_thetas(const SphericalSurface &spherical_surface)
+{
+  std::vector<std::vector<complex_t>> fm_thetas;
+  fm_thetas.reserve(spherical_surface.rows());
+  for (natural_t theta_index = 0; theta_index < spherical_surface.rows(); ++theta_index)
   {
-    for (natural_t m = 0; m <= l; ++m)
-    {
-      complex_t fm_n = {0, 0};
-      theta = delta_theta / 2.0;
-      for (natural_t theta_index = 0; theta_index < spherical_surface.rows(); ++theta_index)
-      {
-        fm_n += fm_thetas[theta_index][m] *
-                (plm_thetas[theta_index].get(l, m) * w * std::sin(theta) * fft_normalization);
-        theta += delta_theta;
-      }
-      result.set(l, m, fm_n);
-    }
+    std::vector<complex_t> fm_theta = spherical_surface.get_psi_array(theta_index);
+    fft(fm_theta.data(), fm_theta.size());
+    fm_thetas.push_back(move(fm_theta));
   }
+  return fm_thetas;
+}
 
+std::vector<real_t> Spharm::compute_cheb_weights(const natural_t n)
+{
+  std::vector<real_t> result;
+  result.reserve(n);
+  const real_t delta_theta = M_PI / static_cast<real_t>(n);
+  real_t theta = 0;
+  for (natural_t k = 0; k < n; ++k) {
+    real_t sum = 0;
+    for (natural_t l = 0; l < n / 2; ++l) {
+      sum += std::sin((2.0 * l + 1.0) * theta) / (2.0 * l + 1.0);
+
+    }
+    result.push_back(sum * 4.0 / M_PI);
+    theta += delta_theta;
+  }
   return result;
 }
 }

@@ -13,10 +13,12 @@
 #include <algorithm>
 #include <vector>
 #include <iomanip>
+#include <cmath>
 #include "fft.h"
 #include "utils.h"
 #include "types.h"
 #include "legendre.h"
+
 
 namespace hyperspharm
 {
@@ -68,6 +70,24 @@ class Spharm
 public:
   static SphericalHarmonics spharm_transform(const SphericalSurface& spherical_surface);
   static SphericalSurface ispharm_transform(const SphericalHarmonics& spherical_harmonics);
+
+private:
+  static std::vector<std::vector<complex_t>> compute_fm_thetas(const SphericalSurface &spherical_surface);
+
+  static std::vector<NormalizedLegendreArray> compute_plm_thetas(const SphericalSurface &spherical_surface);
+
+  static inline complex_t compute_flm(const SphericalSurface &spherical_surface,
+                                      const std::vector<std::vector<complex_t>> &fm_thetas,
+                                      const std::vector<NormalizedLegendreArray> &plm_thetas,
+                                      const std::vector<real_t> &cheb_weights,
+                                      const natural_t l, const natural_t m);
+
+  /*!
+   * Compute the Chebychev weights described in this document: http://dx.doi.org/10.1006/aama.1994.1008
+   * @param n
+   * @return Chebychev weights
+   */
+  static std::vector<real_t> compute_cheb_weights(const natural_t n);
 };
 
 }
