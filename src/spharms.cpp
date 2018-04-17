@@ -49,6 +49,36 @@ natural_t SphericalSurface::cols() const
   return cols_;
 }
 
+std::vector<real_t> SphericalSurface::thetas() const
+{
+  const real_t delta_theta = M_PI / static_cast<real_t>(rows_);
+  std::vector<real_t> result;
+  result.reserve(rows_);
+
+  real_t theta = 0;
+  for (natural_t theta_index = 0; theta_index < rows_; ++theta_index)
+  {
+    result.push_back(theta);
+    theta += delta_theta;
+  }
+  return result;
+}
+
+std::vector<real_t> SphericalSurface::psis() const
+{
+  const real_t delta_psi = M_PI / static_cast<real_t>(cols_);
+  std::vector<real_t> result;
+  result.reserve(cols_);
+
+  real_t psi = 0;
+  for (natural_t psi_index = 0; psi_index < cols_; ++psi_index)
+  {
+    result.push_back(psi);
+    psi += delta_psi;
+  }
+  return result;
+}
+
 std::string SphericalSurface::to_string()
 {
   std::stringstream sstream;
@@ -165,9 +195,23 @@ std::string SphericalHarmonics::to_string()
 
 SphericalHarmonics Spharm::spharm_transform(const SphericalSurface &spherical_surface)
 {
-  auto fm_thetas = compute_fm_thetas(spherical_surface);
-  auto plm_thetas = compute_plm_thetas(spherical_surface);
-  auto cheb_weights = compute_cheb_weights(spherical_surface.rows());
+  const auto thetas = spherical_surface.thetas();
+  const auto l_max = thetas.size();
+  std::vector<real_t> cos_thetas, sin_thetas;
+  cos_thetas.reserve(thetas.size());
+  sin_thetas.reserve(thetas.size());
+  for (const auto& theta : thetas)
+  {
+    cos_thetas.push_back(std::cos(theta));
+    sin_thetas.push_back(std::sin(theta));
+  }
+
+  const auto fm_thetas = compute_fm_thetas(spherical_surface);
+  const auto plm_thetas = compute_plm_thetas(cos_thetas, l_max);
+  const auto cheb_weights = compute_cheb_weights(thetas.size());
+
+  const real_t fft_normalization = 2.0 * M_PI / static_cast<real_t>(sin_thetas.size());
+  const real_t quadrature_normalization = M_PI / static_cast<real_t>(sin_thetas.size());
 
   SphericalHarmonics result(spherical_surface.rows());
 
@@ -176,52 +220,34 @@ SphericalHarmonics Spharm::spharm_transform(const SphericalSurface &spherical_su
   {
     for (natural_t m = 0; m <= l; ++m)
     {
-      result.set(l, m, compute_flm(spherical_surface, fm_thetas,
-                                   plm_thetas, cheb_weights,
-                                   l, m));
+      complex_t flm = {0, 0};
+      for (natural_t theta_index = 0; theta_index < plm_thetas.size(); ++theta_index)
+      {
+        flm += fm_thetas[theta_index][m] *
+               (plm_thetas[theta_index].get(l, m) * cheb_weights[theta_index] * sin_thetas[theta_index]);
+      }
+      result.set(l, m, flm * fft_normalization * quadrature_normalization);
     }
   }
 
   return result;
 }
 
-inline complex_t
-Spharm::compute_flm(const SphericalSurface &spherical_surface,
-                    const std::vector<std::vector<complex_t>> &fm_thetas,
-                    const std::vector<NormalizedLegendreArray> &plm_thetas,
-                    const std::vector<real_t> &cheb_weights,
-                    const natural_t l, const natural_t m)
+std::vector<NormalizedLegendreArray>
+Spharm::compute_plm_thetas(const std::vector<real_t> &cos_thetas, const natural_t l_max)
 {
-  const real_t delta_theta = M_PI / static_cast<real_t>(spherical_surface.rows());
-  const real_t fft_normalization = 2.0 * M_PI / static_cast<real_t>(spherical_surface.rows());
-
-  real_t theta = 0;
-  complex_t flm = {0, 0};
-  for (natural_t theta_index = 0; theta_index < plm_thetas.size(); ++theta_index)
-  {
-    flm += fm_thetas[theta_index][m] *
-           (plm_thetas[theta_index].get(l, m) * cheb_weights[theta_index] * std::sin(theta));
-    theta += delta_theta;
-  }
-  return flm * fft_normalization * M_PI / static_cast<real_t>(spherical_surface.rows());
-}
-
-std::vector<NormalizedLegendreArray> Spharm::compute_plm_thetas(const SphericalSurface &spherical_surface)
-{
-  const real_t delta_theta = M_PI / static_cast<real_t>(spherical_surface.rows());
   std::vector<NormalizedLegendreArray> plm_thetas;
-  plm_thetas.reserve(spherical_surface.rows());
-  real_t theta = 0;
-  for (natural_t theta_index = 0; theta_index < spherical_surface.rows(); ++theta_index)
+  plm_thetas.reserve(cos_thetas.size());
+  for (const auto& cos_theta : cos_thetas)
   {
-    NormalizedLegendreArray pnm_theta = LegendrePoly::get_sph_norm_array(spherical_surface.rows(), std::cos(theta));
+    NormalizedLegendreArray pnm_theta = LegendrePoly::get_sph_norm_array(l_max, cos_theta);
     plm_thetas.push_back(std::move(pnm_theta));
-    theta += delta_theta;
   }
   return plm_thetas;
 }
 
-std::vector<std::vector<complex_t>> Spharm::compute_fm_thetas(const SphericalSurface &spherical_surface)
+std::vector<std::vector<complex_t>>
+Spharm::compute_fm_thetas(const SphericalSurface &spherical_surface)
 {
   std::vector<std::vector<complex_t>> fm_thetas;
   fm_thetas.reserve(spherical_surface.rows());

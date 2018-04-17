@@ -42,6 +42,9 @@ public:
   natural_t rows() const;
   natural_t cols() const;
 
+  std::vector<real_t> thetas() const;
+  std::vector<real_t> psis() const;
+
   std::vector<complex_t> get_psi_array(const natural_t theta_n) const;
   void map(std::function<real_t ()>);
   void map(std::function<real_t (const real_t old_val)>);
@@ -86,13 +89,8 @@ public:
 private:
   static std::vector<std::vector<complex_t>> compute_fm_thetas(const SphericalSurface &spherical_surface);
 
-  static std::vector<NormalizedLegendreArray> compute_plm_thetas(const SphericalSurface &spherical_surface);
-
-  static inline complex_t compute_flm(const SphericalSurface &spherical_surface,
-                                      const std::vector<std::vector<complex_t>> &fm_thetas,
-                                      const std::vector<NormalizedLegendreArray> &plm_thetas,
-                                      const std::vector<real_t> &cheb_weights,
-                                      const natural_t l, const natural_t m);
+  static std::vector<NormalizedLegendreArray>
+  compute_plm_thetas(const std::vector<real_t> &cos_thetas, const natural_t l_max);
 
   /*!
    * Compute the Chebychev weights described in this document: http://dx.doi.org/10.1006/aama.1994.1008
