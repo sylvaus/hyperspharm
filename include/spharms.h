@@ -14,6 +14,7 @@
 #include <vector>
 #include <iomanip>
 #include <cmath>
+#include <functional>
 #include "fft.h"
 #include "utils.h"
 #include "types.h"
@@ -33,6 +34,7 @@ class SphericalSurface
 {
 public:
   SphericalSurface(const natural_t rows, const natural_t cols);
+  SphericalSurface(const natural_t rows, const natural_t cols, const real_t init_val);
   
   real_t get(const natural_t theta_n, const natural_t psi_m) const;
   void set(const natural_t theta_n, const natural_t psi_m, const real_t radius_nm);
@@ -41,6 +43,9 @@ public:
   natural_t cols() const;
 
   std::vector<complex_t> get_psi_array(const natural_t theta_n) const;
+  void map(std::function<real_t ()>);
+  void map(std::function<real_t (const real_t old_val)>);
+  void map(std::function<real_t (const natural_t theta_n, const natural_t psi_m, const real_t old_val)>);
 
   std::string to_string();
 private:
@@ -49,11 +54,18 @@ private:
   std::vector<real_t> values_;
 };
 
+/*!
+ * @brief Spherical Harmonics Container
+ *
+ * Contains (l_max + 2) * (l_max + 1)) / 2 values corresponding to all the spherical coefficients
+ * of l order strictly smaller than l_max + 1
+ */
 class SphericalHarmonics
 {
 public:
   explicit SphericalHarmonics(const natural_t l_max);
 
+  // TODO: Add possibility to input m negative
   complex_t get(const natural_t l, const natural_t m) const;
   void set(const natural_t l, const natural_t m, const complex_t value);
 

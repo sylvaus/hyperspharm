@@ -46,9 +46,9 @@ if (TESTS)
 
   add_executable(benchmark src/benchmark.cpp)
   target_link_libraries(benchmark liblegendre ${GSL_LIBRARY} ${GSL_CBLAS_LIBRARY})
-  
+
   file(GLOB TESTS_SRC ${PROJECT_SOURCE_DIR}/tests/*.cpp)
   add_executable(tests ${TESTS_SRC})
-  target_link_libraries(tests libfft libutils liblegendre ${GTEST_BOTH_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} ${GSL_LIBRARY} ${GSL_CBLAS_LIBRARY})
+  target_link_libraries(tests libspharm libfft libutils liblegendre ${GTEST_BOTH_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} ${GSL_LIBRARY} ${GSL_CBLAS_LIBRARY})
   add_test(AllTests tests)
 endif()

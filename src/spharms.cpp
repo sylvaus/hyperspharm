@@ -18,6 +18,11 @@ SphericalSurface::SphericalSurface(const natural_t rows, const natural_t cols) :
 {
 }
 
+SphericalSurface::SphericalSurface(const natural_t rows, const natural_t cols, const real_t init_val) :
+  rows_(rows), cols_(cols), values_(rows * cols, init_val)
+{
+}
+
 real_t SphericalSurface::get(natural_t theta_n, const natural_t psi_m) const
 {
   return values_[cols_ * theta_n + psi_m];
@@ -67,6 +72,40 @@ std::string SphericalSurface::to_string()
     sstream << std::endl;
   }
   return sstream.str();
+}
+
+void SphericalSurface::map(std::function<real_t()> func)
+{
+  for(auto& value : values_)
+  {
+    value = func();
+  }
+}
+
+void SphericalSurface::map(std::function<real_t(const real_t old_val)> func)
+{
+  for(auto& value : values_)
+  {
+    value = func(value);
+  }
+}
+
+void SphericalSurface::map(std::function<real_t(const natural_t theta_n,
+                                                const natural_t psi_m,
+                                                const real_t old_val)> func)
+{
+  natural_t n = 0;
+  natural_t m = 0;
+  for (unsigned int i = 0; i < rows_ * cols_; ++i)
+  {
+    if (cols_ == m)
+    {
+      ++n;
+      m = 0;
+    }
+    values_[i] = func(n, m, values_[i]);
+    ++m;
+  }
 }
 
 
@@ -131,12 +170,15 @@ SphericalHarmonics Spharm::spharm_transform(const SphericalSurface &spherical_su
   auto cheb_weights = compute_cheb_weights(spherical_surface.rows());
 
   SphericalHarmonics result(spherical_surface.rows());
+
   #pragma omp parallel for schedule(dynamic)
   for (natural_t l = 0; l < result.l_max(); ++l)
   {
     for (natural_t m = 0; m <= l; ++m)
     {
-      result.set(l, m, compute_flm(spherical_surface, fm_thetas, plm_thetas, cheb_weights, l, m));
+      result.set(l, m, compute_flm(spherical_surface, fm_thetas,
+                                   plm_thetas, cheb_weights,
+                                   l, m));
     }
   }
 
@@ -198,11 +240,12 @@ std::vector<real_t> Spharm::compute_cheb_weights(const natural_t n)
   result.reserve(n);
   const real_t delta_theta = M_PI / static_cast<real_t>(n);
   real_t theta = 0;
-  for (natural_t k = 0; k < n; ++k) {
+  for (natural_t k = 0; k < n; ++k)
+  {
     real_t sum = 0;
-    for (natural_t l = 0; l < n / 2; ++l) {
+    for (natural_t l = 0; l < n / 2; ++l)
+    {
       sum += std::sin((2.0 * l + 1.0) * theta) / (2.0 * l + 1.0);
-
     }
     result.push_back(sum * 4.0 / M_PI);
     theta += delta_theta;
