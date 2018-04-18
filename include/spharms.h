@@ -90,7 +90,9 @@ private:
   static std::vector<std::vector<complex_t>> compute_fm_thetas(const SphericalSurface &spherical_surface);
 
   static std::vector<NormalizedLegendreArray>
-  compute_plm_thetas(const std::vector<real_t> &cos_thetas, const natural_t l_max);
+  compute_plm_weight_sin_thetas(const std::vector<real_t> &weights, const std::vector<real_t> &cos_thetas,
+                                const std::vector<real_t> &sin_thetas, const natural_t l_max,
+                                std::vector<natural_t> &plm_indexes);
 
   /*!
    * Compute the Chebychev weights described in this document: http://dx.doi.org/10.1006/aama.1994.1008

@@ -19,6 +19,8 @@ const real_t LegendrePoly::SQRT_4_PI = sqrt(4.0 * M_PI);
 const real_t LegendrePoly::SPHARM_NORM = 1.0 / SQRT_4_PI;
 const real_t LegendrePoly::FULLY_NORM = 1.0 / std::sqrt(2.0);
 
+std::vector<std::vector<LegendrePoly::coeff>> LegendrePoly::coeffs_ = {};
+
 real_t LegendrePoly::get(const natural_t l, const real_t x)
 {
   return get_associated(l, 0, x);
@@ -177,39 +179,35 @@ NormalizedLegendreArray LegendrePoly::get_norm_array(const real_t normalization_
   NormalizedLegendreArray result(l_max);
 
   // Compute N_m^m
-  result.set(0, 0, 1.0);
+  result.unsafe_set(0, 0, 1.0);
   if (l_max != 0)
   {
     const real_t poly = (1.0 - (x * x));
     for (natural_t i = 1; i <= l_max; i++)
     {
-      result.set(i, i,
-                 -result.get(i - 1, i - 1) *
-                 std::sqrt(poly *
-                           (2.0 * static_cast<real_t>(i) + 1.0) /
-                           (2.0 * static_cast<real_t>(i))
-                 )
+      result.unsafe_set(i, i,
+                         -result.unsafe_get(i - 1, i - 1) *
+                         std::sqrt(poly *
+                                   (2.0 * static_cast<real_t>(i) + 1.0) /
+                                   (2.0 * static_cast<real_t>(i))
+                         )
       );
     }
   }
 
-
-  // Compute N_{m + 1}^m
-  #pragma omp parallel for schedule(dynamic)
-  for (natural_t j = 0; j <= l_max; j++)
+  compute_coefficients(l_max);
+  for (natural_t m = 0; m <= l_max; m++)
   {
-    result.set(j+1, j,  x * std::sqrt((2.0 * static_cast<real_t>(j)) + 3.0) * result.get(j, j));
-    for (natural_t i = (j + 2); i <= l_max; i++)
+    real_t pl_2_m = result.unsafe_get(m, m);
+    real_t pl_1_m = x * std::sqrt((2.0 * static_cast<real_t>(m)) + 3.0) * pl_2_m;
+    result.set(m+1, m,  pl_1_m);
+    for (natural_t l = (m + 2); l <= l_max; ++l)
     {
-      const real_t coeff_i_1_j = std::sqrt(
-          static_cast<real_t>((4 * i * i) - 1) / // (2*i - 1) * (2*i + 1) = (2*i)²  - 1 = (4 * i²) -1
-          static_cast<real_t>((i - j) * (i + j))
-      );
-      const real_t coeff_i_2_j = std::sqrt(static_cast<real_t>(((2 * i) + 1) * (i - j - 1) * (i + j - 1)) /
-                                           static_cast<real_t>((i - j) * (i + j) * ((2 * i) - 3))
-      );
-      result.set(i, j, (coeff_i_1_j * x * result.get(i-1, j)) -
-                       (coeff_i_2_j * result.get(i-2, j)));
+      auto pl_m = (coeffs_[m][l].alm * x * pl_1_m) -
+                  (coeffs_[m][l].blm * pl_2_m);
+      result.unsafe_set(l, m, pl_m);
+      pl_2_m = pl_1_m;
+      pl_1_m = pl_m;
     }
   }
 
@@ -231,26 +229,51 @@ NormalizedLegendreArray LegendrePoly::get_sph_norm_array(const natural_t l_max, 
   return get_norm_array(SPHARM_NORM, l_max, x);
 }
 
+void LegendrePoly::compute_coefficients(const natural_t l_max)
+{
+  if(coeffs_.size() > l_max) { return; }
+  else { coeffs_.resize(l_max + 1); }
+
+  for (natural_t m = 0; m <= l_max; m++)
+  {
+    coeffs_[m].resize(l_max + 1);
+    for (natural_t l = (m + 2); l <= l_max; l++)
+    {
+      coeffs_[m][l].alm = std::sqrt(
+          static_cast<real_t>((4 * l * l) - 1) / // (2*i - 1) * (2*i + 1) = (2*i)²  - 1 = (4 * i²) -1
+          static_cast<real_t>((l - m) * (m + l))
+      );
+      coeffs_[m][l].blm = std::sqrt(static_cast<real_t>(((2 * l) + 1) * (l - m - 1) * (l + m - 1)) /
+                                           static_cast<real_t>((l - m) * (l + m) * ((2 * l) - 3))
+      );
+
+    }
+  }
+}
+
 NormalizedLegendreArray::NormalizedLegendreArray(const natural_t l_max) :
   l_max_(l_max), values_(((l_max + 2)*(l_max + 1))/2)
 {}
 
 real_t NormalizedLegendreArray::get(const natural_t l, const integer_t m) const
 {
-  const auto abs_m = static_cast<natural_t >(std::abs(m));
-  const size_t index = ((l+1) * l)/2 + abs_m;
+  const size_t index = get_index(l, m);
   if(index >= values_.size())
   {
     return 0;
   }
 
-  return ((m >= 0) || is_even(abs_m)) ? values_[index] : -values_[index];
+  return ((m >= 0) || is_even(m)) ? values_[index] : -values_[index];
+}
+
+real_t NormalizedLegendreArray::unsafe_get(const natural_t l, const natural_t m) const
+{
+  return values_[((l+1) * l)/2 + m];
 }
 
 void NormalizedLegendreArray::set(const natural_t l, const integer_t m, const real_t x)
 {
-  const auto abs_m = static_cast<natural_t >(std::abs(m));
-  const size_t index = ((l+1) * l)/2 + abs_m;
+  const size_t index = get_index(l, m);
   if(index >= values_.size())
   {
     return;
@@ -261,13 +284,23 @@ void NormalizedLegendreArray::set(const natural_t l, const integer_t m, const re
   }
   else
   {
-    values_[index] =  is_even(abs_m) ? x : -x;
+    values_[index] =  is_even(m) ? x : -x;
   }
 }
 
-size_t NormalizedLegendreArray::get_index(const natural_t l, const integer_t m)
+void NormalizedLegendreArray::unsafe_set(const natural_t l, const natural_t m, const real_t x)
+{
+  values_[((l+1) * l)/2 + m] =  x;
+}
+
+inline size_t NormalizedLegendreArray::get_index(const natural_t l, const integer_t m)
 {
   return ((l+1) * l)/2 + static_cast<natural_t >(std::abs(m));
+}
+
+inline size_t NormalizedLegendreArray::get_index(const natural_t l, const natural_t m)
+{
+  return ((l+1) * l)/2 + m;
 }
 
 NormalizedLegendreArray::NormalizedLegendreArray(NormalizedLegendreArray &&other) noexcept :
@@ -286,10 +319,10 @@ NormalizedLegendreArray &NormalizedLegendreArray::operator=(NormalizedLegendreAr
   return *this;
 }
 
-natural_t NormalizedLegendreArray::l_max() {
+natural_t NormalizedLegendreArray::l_max()
+{
   return l_max_;
 }
-
 
 }
 

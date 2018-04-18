@@ -207,24 +207,25 @@ SphericalHarmonics Spharm::spharm_transform(const SphericalSurface &spherical_su
   }
 
   const auto fm_thetas = compute_fm_thetas(spherical_surface);
-  const auto plm_thetas = compute_plm_thetas(cos_thetas, l_max);
   const auto cheb_weights = compute_cheb_weights(thetas.size());
+  std::vector<natural_t> plm_indexes;
+  const auto plm_weight_sin_thetas = compute_plm_weight_sin_thetas(cheb_weights,
+                                                                   cos_thetas, sin_thetas,
+                                                                   l_max, plm_indexes);
 
   const real_t fft_normalization = 2.0 * M_PI / static_cast<real_t>(sin_thetas.size());
   const real_t quadrature_normalization = M_PI / static_cast<real_t>(sin_thetas.size());
 
   SphericalHarmonics result(spherical_surface.rows());
 
-  #pragma omp parallel for schedule(dynamic)
   for (natural_t l = 0; l < result.l_max(); ++l)
   {
     for (natural_t m = 0; m <= l; ++m)
     {
       complex_t flm = {0, 0};
-      for (natural_t theta_index = 0; theta_index < plm_thetas.size(); ++theta_index)
+      for (natural_t theta_index = 0; theta_index < thetas.size(); ++theta_index)
       {
-        flm += fm_thetas[theta_index][m] *
-               (plm_thetas[theta_index].get(l, m) * cheb_weights[theta_index] * sin_thetas[theta_index]);
+        flm += fm_thetas[theta_index][m] * plm_weight_sin_thetas[plm_indexes[theta_index]].unsafe_get(l, m);
       }
       result.set(l, m, flm * fft_normalization * quadrature_normalization);
     }
@@ -234,15 +235,37 @@ SphericalHarmonics Spharm::spharm_transform(const SphericalSurface &spherical_su
 }
 
 std::vector<NormalizedLegendreArray>
-Spharm::compute_plm_thetas(const std::vector<real_t> &cos_thetas, const natural_t l_max)
+Spharm::compute_plm_weight_sin_thetas(const std::vector<real_t> &weights,
+                                      const std::vector<real_t> &cos_thetas,
+                                      const std::vector<real_t> &sin_thetas,
+                                      const natural_t l_max,
+                                      std::vector<natural_t> &plm_indexes)
 {
+  const auto max_theta_index = static_cast<natural_t>(cos_thetas.size() / 2.0);
   std::vector<NormalizedLegendreArray> plm_thetas;
   plm_thetas.reserve(cos_thetas.size());
-  for (const auto& cos_theta : cos_thetas)
+  for (natural_t theta_index = 0; theta_index <= max_theta_index; ++theta_index)
   {
-    NormalizedLegendreArray pnm_theta = LegendrePoly::get_sph_norm_array(l_max, cos_theta);
+    const real_t norm = sin_thetas[theta_index] * weights[theta_index] * LegendrePoly::SPHARM_NORM;
+    auto pnm_theta = LegendrePoly::get_norm_array(norm,
+                                                  l_max,
+                                                  cos_thetas[theta_index]);
     plm_thetas.push_back(std::move(pnm_theta));
   }
+
+  plm_indexes.clear();
+  plm_indexes.reserve(cos_thetas.size());
+  for (natural_t theta_index = 0; theta_index <= max_theta_index; ++theta_index)
+  {
+    plm_indexes.push_back(theta_index);
+  }
+
+  const natural_t start_index = is_even(cos_thetas.size()) ?  max_theta_index - 1 :  max_theta_index;
+  for (natural_t theta_index = start_index; theta_index > 0; --theta_index)
+  {
+    plm_indexes.push_back(theta_index);
+  }
+
   return plm_thetas;
 }
 

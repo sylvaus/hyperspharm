@@ -46,7 +46,11 @@ public:
                                                       const real_t x);
   static NormalizedLegendreArray get_sph_norm_array(const natural_t l_max,
                                                     const real_t x);
+private:
+  static void compute_coefficients(const natural_t l_max);
 
+  typedef struct {real_t alm; real_t blm;} coeff;
+  static std::vector<std::vector<coeff>> coeffs_;
 };
 
 class NormalizedLegendreArray
@@ -60,11 +64,14 @@ public:
   NormalizedLegendreArray& operator= (NormalizedLegendreArray&& other) noexcept;
 
   real_t get(const natural_t l, const integer_t m) const;
+  real_t unsafe_get(const natural_t l, const natural_t m) const;
   void set(const natural_t l, const integer_t m, const real_t x);
+  void unsafe_set(const natural_t l, const natural_t m, const real_t x);
 
   natural_t l_max();
 private:
-  static size_t get_index(const natural_t l, const integer_t m);
+  static inline size_t get_index(const natural_t l, const integer_t m);
+  static inline size_t get_index(const natural_t l, const natural_t m);
   natural_t l_max_;
   std::vector<real_t> values_;
 };
