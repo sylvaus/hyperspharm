@@ -22,7 +22,8 @@ TEST(SphericalSurface, MapFuncRealVoid)
   const unsigned int n = 1024;
   const unsigned int m = 2048;
   SphericalSurface surface(n, m);
-  surface.map([](){return 4.0;});
+  std::function<real_t()> func = []() { return 4.0; };
+  surface.map(func);
   for (natural_t i = 0; i < surface.rows(); ++i)
   {
     for (natural_t j = 0; j < surface.cols(); ++j)
@@ -38,7 +39,7 @@ TEST(SphericalSurface, MapFuncRealOldValue)
   const unsigned int m = 2048;
   SphericalSurface surface(n, m, 2.0);
   std::function<real_t(const real_t)> func =
-      [](const real_t old_val){return old_val * 2.0;};
+      [](const real_t old_val) { return old_val * 2.0; };
   surface.map(func);
 
   for (natural_t i = 0; i < surface.rows(); ++i)
@@ -56,9 +57,8 @@ TEST(SphericalSurface, MapFuncRealNMOldValue)
   const unsigned int m = 2048;
   SphericalSurface surface(n, m, 2.0);
   std::function<real_t(const natural_t, const natural_t, const real_t)> func =
-      [](const natural_t theta_n, const natural_t psi_m, const real_t old_val)
-      {
-        return old_val * (theta_n * psi_m);
+      [](const natural_t theta_n, const natural_t psi_m, const real_t old_val) {
+          return old_val * (theta_n * psi_m);
       };
   surface.map(func);
 

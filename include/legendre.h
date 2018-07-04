@@ -50,7 +50,9 @@ private:
   static void compute_coefficients(const natural_t l_max);
 
   typedef struct {real_t alm; real_t blm;} coeff;
-  static std::vector<std::vector<coeff>> coeffs_;
+  static natural_t l_max_;
+  static inline natural_t get_coeff_index(const natural_t l, const natural_t m);
+  static std::vector<coeff> coeffs_;
 };
 
 class NormalizedLegendreArray
@@ -70,8 +72,8 @@ public:
 
   natural_t l_max();
 private:
-  static inline size_t get_index(const natural_t l, const integer_t m);
-  static inline size_t get_index(const natural_t l, const natural_t m);
+  inline size_t get_index(const natural_t l, const integer_t m) const;
+  inline size_t get_index(const natural_t l, const natural_t m) const;
   natural_t l_max_;
   std::vector<real_t> values_;
 };
