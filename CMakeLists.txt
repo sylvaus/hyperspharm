@@ -33,6 +33,9 @@ target_link_libraries(liblegendre libutils)
 add_library(libspharm SHARED src/spharms.cpp include/spharms.h)
 target_link_libraries(libspharm liblegendre libutils)
 
+add_library(libhyperspharm SHARED src/hyperspharm.cpp include/hyperspharm.h)
+target_link_libraries(libhyperspharm liblegendre libutils)
+
 add_executable(main src/main.cpp)
 target_link_libraries(main libfft libutils)
 
