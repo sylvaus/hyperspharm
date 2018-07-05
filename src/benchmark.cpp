@@ -75,6 +75,17 @@ void test_spharm_normalized_legendre()
 
   std::cout << "LegendrePoly::get_spharm_normalized took " << elapsed_time_this.count()
             << "s to complete " << nb_tests << " computations \n";
+
+  if (elapsed_time_gnu.count() > elapsed_time_this.count())
+  {
+    std::cout << ((elapsed_time_gnu.count() - elapsed_time_this.count()) / elapsed_time_gnu.count()) * 100
+              << "% of improvement compared to reference\n";
+  }
+  else
+  {
+    std::cout << ((elapsed_time_this.count() - elapsed_time_gnu.count()) / elapsed_time_this.count()) * 100
+              << "% worse compared to reference\n";
+  }
 }
 
 void test_spharm_normalized_legendre_array()
@@ -112,6 +123,16 @@ void test_spharm_normalized_legendre_array()
 
   std::cout << "LegendrePoly::get_spharm_normalized took " << elapsed_time_this.count()
             << "s to complete " << nb_tests << " computations \n";
+  if (elapsed_time_gnu.count() > elapsed_time_this.count())
+  {
+    std::cout << ((elapsed_time_gnu.count() - elapsed_time_this.count()) / elapsed_time_gnu.count()) * 100
+              << "% of improvement compared to reference\n";
+  }
+  else
+  {
+    std::cout << ((elapsed_time_this.count() - elapsed_time_gnu.count()) / elapsed_time_this.count()) * 100
+              << "% worse compared to reference\n";
+  }
 }
 
 int main()
