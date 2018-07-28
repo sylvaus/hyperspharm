@@ -29,12 +29,14 @@ add_library(libfft SHARED src/fft.cpp include/fft.h include/types.h)
 add_library(libutils SHARED src/utils.cpp include/utils.h include/types.h)
 add_library(liblegendre SHARED src/legendre.cpp include/legendre.h)
 target_link_libraries(liblegendre libutils)
+add_library(libgegenbauer SHARED src/gegenbauer.cpp include/gegenbauer.h)
+target_link_libraries(libgegenbauer libutils)
 
 add_library(libspharm SHARED src/spharms.cpp include/spharms.h)
 target_link_libraries(libspharm liblegendre libutils)
 
 add_library(libhyperspharm SHARED src/hyperspharm.cpp include/hyperspharm.h)
-target_link_libraries(libhyperspharm liblegendre libutils)
+target_link_libraries(libhyperspharm libgegenbauer liblegendre libutils)
 
 add_executable(main src/main.cpp)
 target_link_libraries(main libfft libutils)
@@ -52,6 +54,6 @@ if (TESTS)
 
   file(GLOB TESTS_SRC ${PROJECT_SOURCE_DIR}/tests/*.cpp)
   add_executable(tests ${TESTS_SRC})
-  target_link_libraries(tests libspharm libfft libutils liblegendre ${GTEST_BOTH_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} ${GSL_LIBRARY} ${GSL_CBLAS_LIBRARY})
+  target_link_libraries(tests libspharm libfft libutils liblegendre libgegenbauer ${GTEST_BOTH_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} ${GSL_LIBRARY} ${GSL_CBLAS_LIBRARY})
   add_test(AllTests tests)
 endif()
