@@ -14,7 +14,6 @@
 namespace hyperspharm
 {
 
-
 const real_t LegendrePoly::SQRT_4_PI = sqrt(4.0 * M_PI);
 const real_t LegendrePoly::SPHARM_NORM = 1.0 / SQRT_4_PI;
 const real_t LegendrePoly::FULLY_NORM = 1.0 / std::sqrt(2.0);
@@ -51,7 +50,7 @@ real_t LegendrePoly::get_associated(const natural_t l,
     else {return minus_one_power(l);}
   }
  
-  const real_t sqrt_1_x2 = sqrt(1.0d - x*x);
+  const real_t sqrt_1_x2 = sqrt(static_cast<real_t>(1.0) - x*x);
   const real_t half_sqrt_1_x2 = sqrt_1_x2 * 0.5;
   const real_t inv_half_sqrt_1_x2 = x / half_sqrt_1_x2;
   

@@ -1,5 +1,11 @@
 build/
+
+# Kdevelop files
 **/*.kdev4
-cmake-build-debug
+
+# Clion files
 .idea/
-cmake*
+cmake-*
+
+# Visual Studio files
+.vs/
