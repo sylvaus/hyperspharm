@@ -4,6 +4,7 @@
 using hyperspharm::natural_t;
 using hyperspharm::integer_t;
 using hyperspharm::real_t;
+using hyperspharm::Factorial;
 using hyperspharm::GegenbauerPoly;
 using hyperspharm::GegenbauerArray;
 
@@ -45,8 +46,13 @@ public:
   std::vector<natural_t> l_values;
   std::vector<integer_t> m_values;
 
+  static real_t normalization_factor(const natural_t l, const integer_t m)
+  {
+    return std::sqrt((std::pow(2, (2 * m - 1)) * (m + l) * Factorial::get(l)) /  (M_PI * Factorial::get(2 * m + l - 1)) ) 
+            * Factorial::get(m - 1);
+  }
 
-  static real_t Gegenbauer_l0_mAny(real_t )
+  static real_t Gegenbauer_l0_mAny()
   {
     return 1;
   }
@@ -57,11 +63,18 @@ public:
   }
 };
 
-TEST_F(GegenbauerTest, SingleValueLowOrderNaturalIndexes)
+TEST_F(GegenbauerTest, SingleValueLowOrder)
 {
   for (auto x : x_values)
   {
-    ASSERT_FLOAT_EQ(Gegenbauer_l0_mAny(x), GegenbauerPoly::get(0, 0, x));
+    ASSERT_FLOAT_EQ(Gegenbauer_l0_mAny() * normalization_factor(0, 1), GegenbauerPoly::get_normalized(0, 1, x));
+    std::cout << x; 
+  }
+  
+  for (auto x : x_values)
+  {
+    ASSERT_FLOAT_EQ(Gegenbauer_l1(1, x) * normalization_factor(1, 1), GegenbauerPoly::get_normalized(1, 1, x));
+    std::cout << x;
   }
 
 }

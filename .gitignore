@@ -9,3 +9,7 @@ cmake-*
 
 # Visual Studio files
 .vs/
+
+# Pycharm + Python virtual env
+**/.idea
+**/venv

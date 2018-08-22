@@ -17,7 +17,7 @@ real_t Factorial::get(const natural_t n)
 {
   if (factorials_.size() > n)
   {
-  return factorials_[n];
+    return factorials_[n];
   }
   
   for (natural_t index = factorials_.size(); index <= n; index++)

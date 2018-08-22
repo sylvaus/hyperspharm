@@ -312,7 +312,7 @@ NormalizedLegendreArray &NormalizedLegendreArray::operator=(NormalizedLegendreAr
   return *this;
 }
 
-natural_t NormalizedLegendreArray::l_max()
+natural_t NormalizedLegendreArray::l_max() const 
 {
   return l_max_;
 }

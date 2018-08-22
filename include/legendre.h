@@ -68,7 +68,7 @@ public:
   void set(const natural_t l, const integer_t m, const real_t x);
   void unsafe_set(const natural_t l, const natural_t m, const real_t x);
 
-  natural_t l_max();
+  natural_t l_max() const;
 private:
   natural_t l_max_;
   std::vector<std::vector<real_t>> values_;
