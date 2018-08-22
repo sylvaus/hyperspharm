@@ -1,5 +1,7 @@
-#include <gegenbauer.h>
 #include <gtest/gtest.h>
+#include <gsl/gsl_sf.h>
+#include <algorithm>
+#include "gegenbauer.h"
 
 using hyperspharm::natural_t;
 using hyperspharm::integer_t;
@@ -46,20 +48,42 @@ public:
   std::vector<natural_t> l_values;
   std::vector<integer_t> m_values;
 
-  static real_t normalization_factor(const natural_t l, const integer_t m)
+  static real_t normalization_factor(const natural_t l, const natural_t m)
   {
-    return std::sqrt((std::pow(2, (2 * m - 1)) * (m + l) * Factorial::get(l)) /  (M_PI * Factorial::get(2 * m + l - 1)) ) 
-            * Factorial::get(m - 1);
-  }
+    // sqrt(2 ** (2*m-1) * (l + m) / pi)
+    auto first_part = std::sqrt((std::pow(2.0, (2.0 * m - 1.0)) * (m + l)) /  M_PI);
 
-  static real_t Gegenbauer_l0_mAny()
-  {
-    return 1;
-  }
+    // l! * ((m-1)! ** 2) / (2 * m + l - 1)
+    std::vector<real_t> denominators;
+    std::vector<real_t> nominators;
+    for (natural_t i = 1; i <= (m - 1); ++i)
+    {
+      nominators.push_back(i);
+      nominators.push_back(i);
+    }
 
-  static real_t Gegenbauer_l1(integer_t m, real_t x)
-  {
-    return 2 * m * x;
+    for (natural_t i = l+1; i <= (2 * m) + l - 1; ++i)
+    {
+      denominators.push_back(i);
+    }
+
+    real_t second_part = 1;
+    for (size_t j = 0; j < std::min(denominators.size(), nominators.size()); ++j)
+    {
+      second_part *= (static_cast<real_t>(nominators[j])/static_cast<real_t>(denominators[j]));
+    }
+
+    for (size_t j = std::min(denominators.size(), nominators.size()); j < nominators.size(); ++j)
+    {
+      second_part *= static_cast<real_t>(nominators[j]);
+    }
+
+    for (size_t j = std::min(denominators.size(), nominators.size()); j < denominators.size(); ++j)
+    {
+      second_part /= static_cast<real_t>(denominators[j]);
+    }
+
+    return first_part * sqrt(second_part);
   }
 };
 
@@ -67,16 +91,30 @@ TEST_F(GegenbauerTest, SingleValueLowOrder)
 {
   for (auto x : x_values)
   {
-    ASSERT_FLOAT_EQ(Gegenbauer_l0_mAny() * normalization_factor(0, 1), GegenbauerPoly::get_normalized(0, 1, x));
-    std::cout << x; 
+    ASSERT_FLOAT_EQ(gsl_sf_gegenpoly_n(0, 1, x) * normalization_factor(0, 1), GegenbauerPoly::get_normalized(0, 1, x));
+    ASSERT_FLOAT_EQ(gsl_sf_gegenpoly_n(1, 1, x) * normalization_factor(1, 1), GegenbauerPoly::get_normalized(1, 1, x));
+    ASSERT_FLOAT_EQ(gsl_sf_gegenpoly_n(1, 2, x) * normalization_factor(1, 2), GegenbauerPoly::get_normalized(1, 2, x));
+    ASSERT_FLOAT_EQ(gsl_sf_gegenpoly_n(0, 2, x) * normalization_factor(0, 2), GegenbauerPoly::get_normalized(0, 2, x));
+    ASSERT_FLOAT_EQ(gsl_sf_gegenpoly_n(0, 10, x) * normalization_factor(0, 10), GegenbauerPoly::get_normalized(0, 10, x));
+    ASSERT_FLOAT_EQ(gsl_sf_gegenpoly_n(1, 10, x) * normalization_factor(1, 10), GegenbauerPoly::get_normalized(1, 10, x));
+    ASSERT_FLOAT_EQ(gsl_sf_gegenpoly_n(10, 2, x) * normalization_factor(10, 2), GegenbauerPoly::get_normalized(10, 2, x));
+    ASSERT_FLOAT_EQ(gsl_sf_gegenpoly_n(10, 10, x) * normalization_factor(10, 10), GegenbauerPoly::get_normalized(10, 10, x));
   }
-  
+}
+
+TEST_F(GegenbauerTest, SingleValueHighOrder)
+{
   for (auto x : x_values)
   {
-    ASSERT_FLOAT_EQ(Gegenbauer_l1(1, x) * normalization_factor(1, 1), GegenbauerPoly::get_normalized(1, 1, x));
-    std::cout << x;
+    ASSERT_FLOAT_EQ(gsl_sf_gegenpoly_n(0, 50, x) * normalization_factor(0, 50), GegenbauerPoly::get_normalized(0, 50, x));
+    ASSERT_FLOAT_EQ(gsl_sf_gegenpoly_n(25, 50, x) * normalization_factor(25, 50), GegenbauerPoly::get_normalized(25, 50, x));
+    ASSERT_FLOAT_EQ(gsl_sf_gegenpoly_n(17, 85, x) * normalization_factor(17, 85), GegenbauerPoly::get_normalized(17, 85, x));
+    ASSERT_FLOAT_EQ(gsl_sf_gegenpoly_n(0, 115, x) * normalization_factor(0, 115), GegenbauerPoly::get_normalized(0, 115, x));
+    ASSERT_FLOAT_EQ(gsl_sf_gegenpoly_n(67, 115, x) * normalization_factor(67, 115), GegenbauerPoly::get_normalized(67, 115, x));
+    ASSERT_FLOAT_EQ(gsl_sf_gegenpoly_n(112, 98, x) * normalization_factor(112, 98), GegenbauerPoly::get_normalized(112, 98, x));
+    ASSERT_FLOAT_EQ(gsl_sf_gegenpoly_n(45, 87, x) * normalization_factor(45, 87), GegenbauerPoly::get_normalized(45, 87, x));
+    ASSERT_FLOAT_EQ(gsl_sf_gegenpoly_n(98, 45, x) * normalization_factor(98, 45), GegenbauerPoly::get_normalized(98, 45, x));
   }
-
 }
 
 }

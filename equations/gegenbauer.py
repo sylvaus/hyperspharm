@@ -25,6 +25,10 @@ def gegenbauer():
                                        /  (pi * factorial(2 * m_ + l_ - 1)) )\
                                        * factorial(m_ - 1) ** 2
 
+    print_equation(Function("N__1_0")(x), sqrt(simplify(norm_coeff_square(1, 0))))
+
+    print_equation(Function("N__1_1")(x), 2 * x * sqrt(simplify(norm_coeff_square(1, 1))))
+
     print_equation((Function("Factor__m+1_0")(x) / Function("Factor__m_0")(x)) ** 2,
                    norm_coeff_square(m + 1, 0) / norm_coeff_square(m, 0))
 
@@ -40,11 +44,9 @@ def gegenbauer():
     print_equation(Function("N__m_l")(x),
                    (sqrt(simplify(norm_coeff_square(m, l) / norm_coeff_square(m, l - 1) * (aml(m, l) ** 2)))
                         * Function("N__m_l-1")(x))
-                   - # The - sign comes from the negative bml being squared 
+                   - # The - sign comes from the negative bml being squared
                    (sqrt(simplify(norm_coeff_square(m, l) / norm_coeff_square(m, l - 2) * (bml(m, l) ** 2)))
                         * Function("N__m_l-2")(x)))
-
-    pprint(norm_coeff_square(1, 1))
 
 if __name__ == '__main__':
     gegenbauer()
