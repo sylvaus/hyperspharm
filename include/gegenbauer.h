@@ -50,7 +50,7 @@ public:
   static constexpr real_t N01 = std::sqrt(2.0) * INV_SQRT_PI;
   
   static real_t get_normalized(natural_t l, natural_t m, real_t x);
-  static GegenbauerArray get_norm_array(real_t normalization_coeff, natural_t l_max, real_t x);
+  static GegenbauerArray get_norm_array(real_t norm_coeff, natural_t l_max, real_t x);
 private:
   static void compute_coefficients(const natural_t l_max);
 
