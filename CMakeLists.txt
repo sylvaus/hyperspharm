@@ -62,6 +62,8 @@ if (TESTS)
 
     file(GLOB TESTS_SRC ${PROJECT_SOURCE_DIR}/tests/*.cpp)
     add_executable(tests ${TESTS_SRC})
-    target_link_libraries(tests libspharm libfft libutils liblegendre libgegenbauer ${GTEST_BOTH_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} ${GSL_LIBRARY} ${GSL_CBLAS_LIBRARY})
+    target_link_libraries(tests
+            libhyperspharm libspharm libfft libutils liblegendre libgegenbauer
+            ${GTEST_BOTH_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} ${GSL_LIBRARY} ${GSL_CBLAS_LIBRARY})
     add_test(AllTests tests)
 endif()
