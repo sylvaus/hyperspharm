@@ -8,7 +8,7 @@
 
 #pragma once
 
-namespace hypershparm
+namespace hyperspharm
 {
 
 class HyperSphericalSurface

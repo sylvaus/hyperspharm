@@ -67,7 +67,7 @@ real_t GegenbauerPoly::get_normalized(const natural_t l, const natural_t m, cons
   return N_1_m;
 }
 
-GegenbauerArray hyperspharm::GegenbauerPoly::get_norm_array(real_t norm_coeff, natural_t l_max, real_t x)
+GegenbauerArray hyperspharm::GegenbauerPoly::get_norm_array(natural_t l_max, real_t x, real_t coeff)
 {
 #ifndef NOCHECK
   if (std::abs(x) > 1.0)
@@ -111,7 +111,7 @@ GegenbauerArray hyperspharm::GegenbauerPoly::get_norm_array(real_t norm_coeff, n
   {
     for (auto& val : value)
     {
-      val *= norm_coeff;
+      val *= coeff;
     }
   }
   
@@ -151,7 +151,8 @@ real_t GegenbauerArray::get(const natural_t l, const natural_t m) const
 {
   if(l > l_max_)
   {
-    return 0.0;
+    // TODO improve error message
+    throw std::invalid_argument( "Gegenbauer array index out of range" );
   }
 
   return values_[m][l];

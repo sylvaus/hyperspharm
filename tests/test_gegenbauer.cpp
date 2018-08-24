@@ -123,7 +123,7 @@ TEST_F(GegenbauerTest, GetArrayLowOrder)
 {
   for (auto x : x_values)
   {
-    auto array = GegenbauerPoly::get_norm_array(1, 10, x);
+    auto array = GegenbauerPoly::get_norm_array(10, x, 1);
     ASSERT_FLOAT_EQ(gsl_sf_gegenpoly_n(0, 1, x) * normalization_factor(0, 1), array.get(0, 1));
     ASSERT_FLOAT_EQ(gsl_sf_gegenpoly_n(1, 1, x) * normalization_factor(1, 1), array.get(1, 1));
     ASSERT_FLOAT_EQ(gsl_sf_gegenpoly_n(1, 2, x) * normalization_factor(1, 2), array.get(1, 2));
@@ -142,7 +142,7 @@ TEST_F(GegenbauerTest, GetArrayHighOrder)
 {
   for (auto x : x_values)
   {
-    auto array = GegenbauerPoly::get_norm_array(1, 115, x);
+    auto array = GegenbauerPoly::get_norm_array(115, x, 1);
     ASSERT_FLOAT_EQ(gsl_sf_gegenpoly_n(0, 50, x) * normalization_factor(0, 50), array.get(0, 50));
     ASSERT_FLOAT_EQ(gsl_sf_gegenpoly_n(25, 50, x) * normalization_factor(25, 50), array.get(25, 50));
     ASSERT_FLOAT_EQ(gsl_sf_gegenpoly_n(17, 85, x) * normalization_factor(17, 85), array.get(17, 85));

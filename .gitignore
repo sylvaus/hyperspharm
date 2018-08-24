@@ -13,3 +13,6 @@ cmake-*
 # Pycharm + Python virtual env
 **/.idea
 **/venv
+
+# Doxygen output files
+doc/html/
