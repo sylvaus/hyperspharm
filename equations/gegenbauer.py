@@ -35,11 +35,11 @@ def gegenbauer():
     print_equation((Function("Factor__m+1_1")(x) / Function("Factor__m_1")(x)) ** 2,
                    norm_coeff_square(m + 1, 1) / norm_coeff_square(m, 1))
 
-    print_equation(Function("N__m+1_0")(x) ** 2,
-                   norm_coeff_square(m + 1, 0) / norm_coeff_square(m, 0) * Function("N__m_0")(x) ** 2)
+    print_equation(Function("N__m+1_0")(x),
+                   sqrt(simplify(norm_coeff_square(m + 1, 0) / norm_coeff_square(m, 0))) * Function("N__m_0")(x))
 
-    print_equation(Function("N__m+1_1")(x) ** 2,
-                   (norm_coeff_square(m + 1, 1) / norm_coeff_square(m, 1)) * (((m + 1)/m) ** 2) * Function("N__m_1")(x) ** 2)
+    print_equation(Function("N__m+1_1")(x),
+                   sqrt(simplify((norm_coeff_square(m + 1, 1) / norm_coeff_square(m, 1)) * (((m + 1)/m) ** 2))) * Function("N__m_1")(x))
 
     print_equation(Function("N__m_l")(x),
                    (sqrt(simplify(norm_coeff_square(m, l) / norm_coeff_square(m, l - 1) * (aml(m, l) ** 2)))

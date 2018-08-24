@@ -59,10 +59,8 @@ real_t GegenbauerPoly::get_normalized(const natural_t l, const natural_t m, cons
   for (natural_t i = 2; i <= l; ++i)
   {
     const real_t tmp = N_1_m;
-    const auto galm = GGALM(i, m);
-    const auto gblm = GGBLM(i, m);
 
-    N_1_m = (x * galm * N_1_m) + (gblm * N_0_m);
+    N_1_m = (x * GGALM(i, m) * N_1_m) + (GGBLM(i, m) * N_0_m);
     N_0_m = tmp;
   }
   
@@ -71,6 +69,17 @@ real_t GegenbauerPoly::get_normalized(const natural_t l, const natural_t m, cons
 
 GegenbauerArray hyperspharm::GegenbauerPoly::get_norm_array(real_t norm_coeff, natural_t l_max, real_t x)
 {
+#ifndef NOCHECK
+  if (std::abs(x) > 1.0)
+  {
+    throw std::invalid_argument( "Gegenbauer Polynomial: function domain is x in [-1, 1] " );
+  }
+  if (l_max < 1)
+  {
+    throw std::invalid_argument( "Gegenbauer Polynomial: l_max should be bigger than 0 " );
+  }
+#endif
+
   GegenbauerArray result(l_max);
   auto& values = result.values();
   compute_coefficients(l_max);
@@ -194,7 +203,6 @@ std::vector<std::vector<real_t>>& GegenbauerArray::values()
 {
   return values_;
 }
-
 
 }
 
