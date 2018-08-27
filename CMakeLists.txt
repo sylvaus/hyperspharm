@@ -8,12 +8,12 @@ set(VERSION_MINOR 1)
 set (CMAKE_CXX_STANDARD 11)
 
 if(UNIX)
-    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Werror")
+    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Werror -fno-rounding-math -ffinite-math-only ")
 endif()
 
 if(MAX_OPTIMIZATION)
-    MESSAGE("Max optimization on. Setting flags \"-ffast-math -march=native -flto\"")
-    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -ffast-math -march=native -flto")
+    MESSAGE("Max optimization on. Setting flags \"-ffast-math -march=native \"")
+    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -ffast-math -march=native ")
 endif()
 
 if(COVERAGE)

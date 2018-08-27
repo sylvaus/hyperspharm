@@ -86,6 +86,20 @@ void test_spharm_normalized_legendre()
     std::cout << ((elapsed_time_this.count() - elapsed_time_gnu.count()) / elapsed_time_this.count()) * 100
               << "% worse compared to reference\n";
   }
+
+  int count = 0;
+  for (size_t i = 0; i < results_gnu.size(); ++i)
+  {
+    if (((results_gnu[i] - results_this[i]) /  results_gnu[i]) > 0.001)
+    {
+      std::cout << "Difference in result: gsl: " << results_gnu[i] << ", this: " << results_this[i] << ", x: "
+                << values[i].x << ", l: " << values[i].l << ", m: " << values[i].m << std::endl;
+      ++count;
+    }
+  }
+  std::cout << "There were " << count << " differences out of " << nb_tests
+            << " (" << (count * 100.0)/ nb_tests << "%)\n";
+
 }
 
 void test_spharm_normalized_legendre_array()
@@ -100,7 +114,7 @@ void test_spharm_normalized_legendre_array()
   auto start_this = std::chrono::high_resolution_clock::now();
   for(const auto& value : values)
   {
-    auto this_results = hyperspharm::LegendrePoly::get_fully_norm_array(value.l, value.x);
+    auto this_results = hyperspharm::LegendrePoly::get_sph_norm_array(value.l, value.x);
     results_this.push_back(this_results.get(value.l,value.m));
   }
   auto finish_this = std::chrono::high_resolution_clock::now();
@@ -110,7 +124,7 @@ void test_spharm_normalized_legendre_array()
   for(const auto& value : values)
   {
     auto *gsl_results = new double[gsl_sf_legendre_array_n(value.l)];
-    gsl_sf_legendre_array_e(GSL_SF_LEGENDRE_FULL, value.l,  value.x, -1, gsl_results);
+    gsl_sf_legendre_array_e(GSL_SF_LEGENDRE_SPHARM, value.l,  value.x, -1, gsl_results);
 
     results_gnu.push_back(gsl_results[gsl_sf_legendre_array_index(value.l,value.m)]);
     delete[] gsl_results;
@@ -133,6 +147,19 @@ void test_spharm_normalized_legendre_array()
     std::cout << ((elapsed_time_this.count() - elapsed_time_gnu.count()) / elapsed_time_this.count()) * 100
               << "% worse compared to reference\n";
   }
+
+  int count = 0;
+  for (size_t i = 0; i < results_gnu.size(); ++i)
+  {
+    if (((results_gnu[i] - results_this[i]) /  results_gnu[i]) > 0.001)
+    {
+      std::cout << "Difference in result: gsl: " << results_gnu[i] << ", this: " << results_this[i]
+                << ", x: " << values[i].x << ", l: " << values[i].l << ", m: " << values[i].m << std::endl;
+      ++count;
+    }
+  }
+  std::cout << "There were " << count << " differences out of " << nb_tests
+            << " (" << (count * 100.0)/ nb_tests << "%)\n";
 }
 
 int main()

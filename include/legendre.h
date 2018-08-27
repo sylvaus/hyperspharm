@@ -9,10 +9,11 @@
 
 #pragma once
 
-#include <cstdint>
+#include <cmath>
 #include <vector>
 #include "utils.h"
 #include "types.h"
+
 
 namespace hyperspharm
 {

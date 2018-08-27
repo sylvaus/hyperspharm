@@ -9,7 +9,6 @@
 
 #pragma once
 
-#include <cstdint>
 #include <algorithm>
 #include <vector>
 #include <iomanip>
@@ -57,7 +56,7 @@ private:
   std::vector<real_t> values_;
 };
 
-/*!
+/**
  * @brief Spherical Harmonics Container
  *
  * Contains (l_max + 2) * (l_max + 1)) / 2 values corresponding to all the spherical coefficients

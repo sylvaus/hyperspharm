@@ -43,7 +43,7 @@ real_t LegendrePoly::get_associated(const natural_t l,
   const auto abs_m = static_cast<natural_t >(std::abs(m));
 #endif
 
-  if (almost_equal(std::abs(x), static_cast<real_t>(1.0), static_cast<real_t>(0.000001))) 
+  if (almost_equal(std::abs(x), static_cast<real_t>(1.0), static_cast<real_t>(0.000000001)))
   {
     if (m != 0) {return 0;}
     if (x > 0.0) {return 1.0;}
@@ -72,7 +72,7 @@ real_t LegendrePoly::get_associated(const natural_t l,
       {/*Do nothing*/}
     }
   }
-  
+
   real_t p_l__m = minus_one_power(l) * std::pow(half_sqrt_1_x2, l) / Factorial::get(l); // P_l^{-l}
   if (m == -static_cast<integer_t>(l)) {return p_l__m;}
   real_t p_l_1_m = -p_l__m * static_cast<real_t>(l) * inv_half_sqrt_1_x2; // P_l^{1-l}
@@ -81,7 +81,8 @@ real_t LegendrePoly::get_associated(const natural_t l,
   for (integer_t k = 2 - l; k <= -abs_m; k++)
   {
     real_t tmp = p_l_1_m;
-    p_l_1_m = ((k-1) * (inv_half_sqrt_1_x2) * p_l_1_m) - ((l - (k-2)) * (l + (k - 1)) * p_l__m);
+    p_l_1_m = (static_cast<real_t>(k-1) * (inv_half_sqrt_1_x2) * p_l_1_m)
+              - (static_cast<real_t>(l - (k-2)) * static_cast<real_t>(l + (k - 1)) * p_l__m);
     p_l__m = tmp;
   }
 
@@ -90,7 +91,7 @@ real_t LegendrePoly::get_associated(const natural_t l,
     p_l_1_m = minus_one_power(abs_m) * (Factorial::get(l + abs_m)/Factorial::get(l - abs_m)) * p_l_1_m;
   }
 
-  return (minus_one_power(m) == 1.0) ? p_l_1_m : -p_l_1_m;
+  return is_even(m) ? p_l_1_m : -p_l_1_m;
 }
 
 
@@ -120,11 +121,11 @@ real_t LegendrePoly::get_fully_normalized(const natural_t l,
     const real_t poly = (1.0 - (x * x));
     for (natural_t i = 1; i <= abs_m; i++)
     {
-      n_m_m *= (poly * 
-                (2.0 * static_cast<real_t>(i) + 1.0) /
-                 (2.0 * static_cast<real_t>(i)));
+      n_m_m *= std::sqrt(poly *
+                         (2.0 * static_cast<real_t>(i) + 1.0) /
+                         (2.0 * static_cast<real_t>(i)));
     }
-    n_m_m = minus_one_power(abs_m) * std::sqrt(n_m_m);
+    n_m_m = minus_one_power(abs_m) * (n_m_m);
   }
   
   if (l == abs_m) {return n_m_m;}
@@ -182,12 +183,10 @@ NormalizedLegendreArray LegendrePoly::get_norm_array(const real_t normalization_
   real_t pi_i = 1.0;
   if (l_max != 0)
   {
-    const real_t poly = (1.0 - (x * x));
+    const real_t poly_sqrt = -std::sqrt(static_cast<real_t>(1.0) - (x * x));
     for (natural_t i = 1; i <= l_max; i++)
     {
-      pi_i *= -std::sqrt(poly *
-                             (static_cast<real_t>(i * 2 +1)) /
-                             (static_cast<real_t>(i * 2)));
+      pi_i = poly_sqrt * (pi_i * std::sqrt(static_cast<real_t>(2*i + 1) / static_cast<real_t>(2*i)));
       result.values_[i][i] = pi_i;
     }
   }
