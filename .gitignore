@@ -1,4 +1,5 @@
 build/
+CMakeSettings*
 
 # Kdevelop files
 **/*.kdev4
@@ -13,6 +14,9 @@ cmake-*
 # Pycharm + Python virtual env
 **/.idea
 **/venv
+
+# Python
+**/*.pyc
 
 # Doxygen output files
 doc/html/
