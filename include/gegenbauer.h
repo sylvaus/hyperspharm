@@ -74,8 +74,8 @@ private:
 class GegenbauerPoly
 {
 public:
-  static constexpr real_t INV_SQRT_PI = 1.0 / std::sqrt(M_PI);
-  static constexpr real_t N01 = std::sqrt(2.0) * INV_SQRT_PI;
+	static const real_t INV_SQRT_PI;
+	static const real_t N01;
 
   /**
    * Returns the value of normalized G^m_l(x)

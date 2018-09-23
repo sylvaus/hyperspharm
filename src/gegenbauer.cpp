@@ -22,6 +22,9 @@
 namespace hyperspharm
 {
 
+const real_t GegenbauerPoly::INV_SQRT_PI = 1.0 / std::sqrt(M_PI);
+const real_t GegenbauerPoly::N01 = std::sqrt(2.0) * INV_SQRT_PI;
+
 std::vector<std::vector<GegenbauerPoly::coeff>> GegenbauerPoly::coeffs_ = {};
 
 real_t GegenbauerPoly::get_normalized(const natural_t l, const natural_t m, const real_t x)
