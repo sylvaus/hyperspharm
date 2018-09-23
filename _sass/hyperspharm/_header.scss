@@ -1,0 +1,29 @@
+.custom-nav-bar {
+    background-color: $navigation-bar-color;
+    ul {
+        list-style-type: none;
+        margin: auto;
+        padding: 0;
+        overflow: hidden;
+        background-color: $navigation-bar-color;
+        max-width: $content-width * 1.1;
+        width: calc(100% - 40px);
+    }
+    li {
+        float: left;
+    }
+    li a {
+        @include relative-font-size(1.2);
+        display: block;
+        color: white;
+        text-align: center;
+        padding: 14px 16px;
+        text-decoration: none;
+    }
+    li a:hover:not(.active) {
+        background-color: $navigation-over-color;
+    }
+    .active {
+        background-color: $brand-color;
+    }
+}
