@@ -1,4 +1,4 @@
-from sympy import Function, simplify, sqrt, factorial, pi, Symbol
+from sympy import Function, simplify, sqrt, factorial, pi, Symbol, Rational
 from sympy.abc import x, m, l
 
 from print_helpers import print_equation
@@ -16,6 +16,11 @@ def norm_coeff_square(m_, l_):
     return ((2 ** (2 * m_ - 1) * (m_ + l_) * factorial(l_))
             / (pi * factorial(2 * m_ + l_ - 1))) \
            * factorial(m_ - 1) ** 2
+
+
+def norm_coeff(m_, l_):
+    return (((2 ** (m_ - Rational(1, 2))) * factorial(m_ - 1)) / sqrt(pi)) \
+           * sqrt(((m_ + l_) * factorial(l_)) / factorial(2 * m_ + l_ - 1))
 
 
 def gegenbauer():
