@@ -43,11 +43,12 @@ Fully Normalized Legendre Polynomials have different definitions. In this sectio
 $$N_l^{m}(x) = \sqrt{(l + 1/2)\frac{(l-m)!}{(l+m)!}}P_l^{m}(x)$$
 
 They can be computed using the following two steps[[4](http://mitgcm.org/~mlosch/geoidcookbook/node11.html)]:
+
 1). Compute Sectoral (l=m) $N_m^{m}(x)$ using:
 
 $$N_m^{m}(x) = \left(\sqrt{1-x^2}\right)^m \sqrt{\frac{3}{2}}\;\prod_{m}^{i=2}\sqrt{\frac{2i+1}{2i}}$$
 
-2. Compute non-Sectoral $N_l^{m}(x)$ using the recursive formula:
+2). Compute non-Sectoral $N_l^{m}(x)$ using the recursive formula:
 
 $$N_l^{m}(x) = a_l^{m}N_{l-1}^{m}(x) - b_l^{m}N_{l-2}^{m}(x)\begin{cases} & a_l^{m} = x\sqrt{\frac{(2l-1)(2l+1)}{(l-m)(l+m)}}\\ & b_l^{m} = \sqrt{\frac{(2l+1)(l+m-1)(l-m-1)}{(l-m)(l+m)(2l-3)}} \end{cases}$$
 
