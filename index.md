@@ -2,5 +2,4 @@
 tab: Home
 ---
 
-# Home
-This is our text
+This website describes the equations used in the HyperSpharm library.

@@ -1,8 +1,32 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
-
+{% if page.math != false %}
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      TeX: {
+        equationNumbers: {
+          autoNumber: "AMS"
+        }
+      },
+      tex2jax: {
+        inlineMath: [ ['$','$'], ['\(', '\)'] ],
+        displayMath: [ ['$$','$$'] ],
+        processEscapes: true,
+      }
+    });
+</script>
+<script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML"></script>
+{% endif %}
 {% assign tab = page.tab | default: "Home" %}
 <script>
-$(document).ready(function(){
-    $( ".custom-nav-bar ul li a#{{tab}}" ).addClass('active')
- });
+    $(document).ready(function () {
+        $(".custom-nav-bar a#{{tab}}").addClass('active')
+    });
+    function header_dropdown() {
+        var header = $(".header-nav .custom-nav-bar")[0];
+        if (header.className === "custom-nav-bar") {
+            header.className += " responsive";
+        } else {
+            header.className = "custom-nav-bar";
+        }
+    }
 </script>
