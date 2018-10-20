@@ -234,6 +234,9 @@ SphericalHarmonics Spharm::spharm_transform(const SphericalSurface &spherical_su
   return result;
 }
 
+// TODO: Check: there is most likely an error in this function 
+// Pnm(cos(theta)) = (-1)^(n+m)Pnm(cos(pi-theta))
+// and not Pnm(cos(theta)) = (-1)^(n+m)Pnm(cos(pi-theta))
 std::vector<NormalizedLegendreArray>
 Spharm::compute_plm_weight_sin_thetas(const std::vector<real_t> &weights,
                                       const std::vector<real_t> &cos_thetas,
