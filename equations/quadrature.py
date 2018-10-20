@@ -1,5 +1,15 @@
 from typing import List
 from math import cos, pi
+from collections import namedtuple
+
+FunctionResult = namedtuple("FunctionResult", ["func", "result", "str"])
+
+FUNCTION_RESULT_N_4 = [
+    FunctionResult(lambda x: x, 0, "f(x) = x")
+    , FunctionResult(lambda x: x ** 2, 2/3, "f(x) = x ** 2")
+    , FunctionResult(lambda x: x ** 3, 0, "f(x) = x ** 3")
+    , FunctionResult(lambda x: x ** 4, 2/4, "f(x) = x ** 4")
+]
 
 
 class Point:
@@ -16,10 +26,13 @@ def trapezoid_rule(points: List[Point]):
     return result
 
 
-def clenshaw_curtis_rule(points: List[Point]):
+def clenshaw_curtis_rule_even_only(points: List[Point]):
+    """
+    Based on https://en.wikipedia.org/wiki/Clenshaw%E2%80%93Curtis_quadrature
+    """
     N = (len(points) - 1)
     d = [1.0] + \
-        [2.0 / (1.0 - (2.0 * k) ** 2) for k in range(1, (N // 2) - 1)] + \
+        [2.0 / (1.0 - (2.0 * k) ** 2) for k in range(1, N // 2)] + \
         [1.0 / (1.0 - N ** 2)]
     result = 0
     ws = []
@@ -32,23 +45,44 @@ def clenshaw_curtis_rule(points: List[Point]):
                 mult = 1.0
             w += mult * (2.0 / N) * cos(n * k * pi * 2.0 / N) * dj
         ws.append(w)
-        result += ((points[n].y + points[-(1+n)].y) * w)
+        result += ((points[n].y + points[-(1 + n)].y) * w)
+
+    return result
+
+
+def clenshaw_curtis_rule_expanded_even_only(points: List[Point]):
+    N = (len(points) - 1)
+    d = [1.0] + \
+        [2.0 / (1.0 - (2.0 * k) ** 2) for k in range(1, N // 2)] + \
+        [1.0 / (1.0 - N ** 2)]
+    result = 0
+    ws = []
+    for n in range(N + 1):
+        w = 0
+        for k, dj in enumerate(d):
+            if (n == 0) or (n == N):
+                mult = 0.5
+            else:
+                mult = 1.0
+            w += mult * (2.0 / N) * cos(n * k * pi * 2.0 / N) * dj
+        ws.append(w)
+        result += (points[n].y * w)
 
     return result
 
 
 def verification():
-    def func(x):
-        return x ** 4 + x ** 3 + x ** 11
+    N = 4
+    for func_result in FUNCTION_RESULT_N_4:
+        points = []
+        for i in range(N + 1):
+            x = cos(pi * (i / N))
+            points.append(Point(x, func_result.func(x)))
 
-    N = 12
-    points = []
-    for i in range(N + 1):
-        x = cos(pi * (i / N))
-        points.append(Point(x, func(x)))
-
-    print("Trapezoid", trapezoid_rule(points))
-    print("Clenshaw Curtis", clenshaw_curtis_rule(points))
+        print("\nTest with {}, expected result: {}".format(func_result.str, func_result.result))
+        print("Trapezoid", trapezoid_rule(points))
+        print("Clenshaw Curtis", clenshaw_curtis_rule_even_only(points))
+        print("Clenshaw Curtis", clenshaw_curtis_rule_expanded_even_only(points))
 
 
 if __name__ == '__main__':
