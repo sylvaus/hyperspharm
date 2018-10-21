@@ -1,10 +1,24 @@
 <div class="header-nav">
     <div class=custom-nav-bar>
         <a id="Home" href="{{ "/index.html" | relative_url }}">Home</a>
-        <a id="Legendre" href="{{ "/legendre.html" | relative_url}}">Legendre</a>
-        <a id="Spharm" href="{{ "/spharm.html" | relative_url }}">Spharm</a>
-        <a id="Gegenbauer" href="{{ "/gegenbauer.html" | relative_url }}">Gegenbauer</a>
-        <a id="HyperSpharm" href="{{ "/hyperspharm.html" | relative_url }}">HyperSpharm</a>
+        <div class="dropdown">
+            <button class="dropbtn">Polynomials
+                <i class="fa fa-caret-down"></i>
+            </button>
+            <div class="dropdown-content">
+                <a id="Legendre" href="{{ "/legendre.html" | relative_url}}">Legendre</a>
+                <a id="Gegenbauer" href="{{ "/gegenbauer.html" | relative_url }}">Gegenbauer</a>
+            </div>
+        </div>
+        <div class="dropdown">
+            <button class="dropbtn">Spharms
+                <i class="fa fa-caret-down"></i>
+            </button>
+            <div class="dropdown-content">
+                <a id="Spharm" href="{{ "/spharm.html" | relative_url }}">Spharm</a>
+                <a id="HyperSpharm" href="{{ "/hyperspharm.html" | relative_url }}">HyperSpharm</a>
+            </div>
+        </div>
         <a id="About" href="{{ "/about.html" | relative_url }}">About</a>
         <a href="javascript:void(0);" class="icon" onclick="header_dropdown()">&#9776;</a>
     </div>

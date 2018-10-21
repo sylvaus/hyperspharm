@@ -19,7 +19,13 @@
 {% assign tab = page.tab | default: "Home" %}
 <script>
     $(document).ready(function () {
-        $(".custom-nav-bar a#{{tab}}").addClass('active')
+        if ($(".dropdown-content a#{{tab}}").length > 0) {
+            var parent = $(".dropdown-content a#{{tab}}").parent().parent();
+            parent.addClass('active')
+            parent.children(".dropbtn").addClass('active')
+        } else {
+            $(".custom-nav-bar a#{{tab}}").addClass('active')
+        }
     });
     function header_dropdown() {
         var header = $(".header-nav .custom-nav-bar")[0];
