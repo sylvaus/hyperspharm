@@ -11,3 +11,9 @@ The Clenshaw-Curtis quadrature can be written as:
 $$\begin{eqnarray}\int_{-1}^{1} P(x)dx &=&  \int_{0}^{\pi} P(\cos\theta)\sin\theta d\theta 
 \\&=& \sum_{n=0}^{N}P(\cos\left(\frac{n\pi}{N}\right)) w_n\end{eqnarray}$$
 
+$$\begin{eqnarray}\text{where} \quad w_n &=& \frac{1}{N}\sum_{k=0}^{N_{2max}} \frac{a_k b_n}{1 - (2 k)^2} \cos\left(\frac{2 n k \pi}{N}\right) 
+\; \text{,} \; N_{2max} = \begin{cases} & \frac{N}{2} \; \text{if} \; N = 0 \; \text{even} \\ & \frac{N-1}{2} \; \text{otherwise}\end{cases}
+\\ a_k &=& \begin{cases} & 1 \; \text{if} \; k = 0 \; \text{or} \; 2k= N \\ & 2 \; \text{otherwise}\end{cases}
+\; \text{,} \; b_n = \begin{cases} & 1 \; \text{if} \; n = 0 \; \text{or} \; n= N \\ & 2 \; \text{otherwise}\end{cases}\end{eqnarray}$$ 
+
+Demonstration:
