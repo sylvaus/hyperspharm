@@ -16,4 +16,11 @@ $$\begin{eqnarray}\text{where} \quad w_n &=& \frac{1}{N}\sum_{k=0}^{N_{2max}} \f
 \\ a_k &=& \begin{cases} & 1 \; \text{if} \; k = 0 \; \text{or} \; 2k= N \\ & 2 \; \text{otherwise}\end{cases}
 \; \text{,} \; b_n = \begin{cases} & 1 \; \text{if} \; n = 0 \; \text{or} \; n= N \\ & 2 \; \text{otherwise}\end{cases}\end{eqnarray}$$ 
 
-Demonstration:
+Demonstration (based on [[1](https://en.wikipedia.org/wiki/Clenshaw%E2%80%93Curtis_quadrature)] ):
+
+Since $P(x)$ is a polynomial of order maximum $N$, $P(\cos\theta)$ can be written as:<br>
+$$\begin{eqnarray}P(\cos\theta) &=& \sum_{n=0}^{N}p_n\cos^n\theta
+\\&=& \sum_{n=0}^{N}p'_n\cos\left(n\theta\right) \text{ using trigonometric formula}\href{http://mathworld.wolfram.com/TrigonometricPowerFormulas.html}{[2]}
+\end{eqnarray}$$
+
+This shows that the maximum frequency of the signal defined by $P(\cos\theta)$ is $N$ and thus it can 
