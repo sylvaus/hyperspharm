@@ -1,4 +1,4 @@
-exclude: ["Gemfile", "Gemfile.lock", "Rakefile", "README.md", "sass"]
+exclude: ["Gemfile", "Gemfile.lock", "Rakefile", "README.md", "sass", vendor]
 markdown: kramdown
 
 sass:
